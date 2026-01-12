@@ -54,6 +54,8 @@ public function up()
             $table->boolean('is_featured')->default(false);
             $table->boolean('is_open_now')->default(false); // Real-time status
             $table->boolean('accepts_orders')->default(true);
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
             
             $table->timestamps();

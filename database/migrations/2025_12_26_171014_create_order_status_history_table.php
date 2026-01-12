@@ -18,8 +18,12 @@ return new class extends Migration
             $table->string('new_status', 50);
             $table->foreignId('changed_by')->nullable()->constrained('users')->onDelete('set null');
             $table->text('notes')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
             $table->timestamp('changed_at');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index(['order_id', 'changed_at']);
         });

@@ -22,8 +22,11 @@ return new class extends Migration
             $table->integer('display_order')->default(0);
             $table->boolean('is_featured')->default(false);
             $table->boolean('is_active')->default(true);
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index('slug');
             $table->index('parent_id');

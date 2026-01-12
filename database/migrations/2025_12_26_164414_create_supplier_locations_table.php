@@ -20,11 +20,14 @@ return new class extends Migration
             $table->string('bank_name', 100)->nullable();
             $table->string('bank_branch', 100)->nullable();
             $table->string('mobile_money_number', 20)->nullable();
-            $table->enum('mobile_money_provider')->nullable();
+            $table->string('mobile_money_provider')->nullable();
             $table->boolean('is_primary')->default(false);
             $table->boolean('is_active')->default(true);
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

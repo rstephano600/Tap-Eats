@@ -21,7 +21,11 @@ return new class extends Migration
             $table->json('selected_addons')->nullable();
             $table->text('special_instructions')->nullable();
             $table->decimal('item_total', 10, 2);
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index('user_id');
             $table->index(['user_id', 'supplier_id']);

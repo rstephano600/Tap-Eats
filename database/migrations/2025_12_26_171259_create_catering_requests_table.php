@@ -21,6 +21,7 @@ public function up()
             $table->string('event_type', 100); // Wedding, Corporate, Birthday, etc
             $table->date('event_date');
             $table->time('event_time');
+            $table->integer('duration_days')->nullable();
             $table->integer('duration_hours')->nullable();
             $table->integer('guest_count');
             $table->string('venue_name', 255)->nullable();
@@ -42,13 +43,16 @@ public function up()
             $table->string('contact_phone', 20);
             
             // Status
-            $table->enum('status', ['pending', 'quoted', 'accepted', 'rejected', 'completed', 'cancelled'])->default('pending');
+            $table->enum('request_status', ['pending', 'quoted', 'accepted', 'rejected', 'completed', 'cancelled'])->default('pending');
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
             $table->timestamps();
             $table->softDeletes();
 
             $table->index(['customer_id', 'status']);
             $table->index('event_date');
-            $table->spatialIndex(['venue_latitude', 'venue_longitude']);
+
         });
     }
 

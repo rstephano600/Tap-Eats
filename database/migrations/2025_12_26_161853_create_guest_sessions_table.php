@@ -25,8 +25,11 @@ return new class extends Migration
             $table->json('preferences')->nullable(); // Store cart, favorites, etc.
             $table->timestamp('last_activity_at');
             $table->timestamp('expires_at');
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index('session_token');
             $table->index(['latitude', 'longitude']);

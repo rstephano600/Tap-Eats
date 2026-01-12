@@ -26,8 +26,11 @@ return new class extends Migration
             $table->boolean('sms_notifications')->default(true);
             $table->boolean('push_notifications')->default(true);
             $table->integer('loyalty_points')->default(0);
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index('user_id');
         });

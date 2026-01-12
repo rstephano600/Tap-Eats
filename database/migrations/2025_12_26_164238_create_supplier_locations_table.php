@@ -27,13 +27,12 @@ public function up()
             $table->string('phone', 20)->nullable();
             $table->boolean('is_primary')->default(false);
             $table->boolean('is_active')->default(true);
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
             $table->timestamps();
+            $table->softDeletes();
 
-            // Geospatial index for location queries
-            $table->spatialIndex(['latitude', 'longitude']);
-            $table->index('supplier_id');
-            $table->index('is_primary');
         });
     }
 

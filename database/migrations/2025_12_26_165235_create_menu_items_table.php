@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('menu_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
+            $table->foreignId('supplier_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('menu_category_id')->nullable()->constrained()->onDelete('set null');
             $table->string('name', 255);
-            $table->string('slug', 255);
+            $table->string('slug', 255)->unique();
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
             $table->decimal('discounted_price', 10, 2)->nullable();
@@ -52,6 +52,8 @@ return new class extends Migration
             
             $table->integer('display_order')->default(0);
             $table->boolean('is_active')->default(true);
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
             $table->timestamps();
             $table->softDeletes();

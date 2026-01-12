@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('business_type', function (Blueprint $table) {
+        Schema::create('business_types', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100); // 'restaurant', 'cafe', 'bakery', 'catering', 'cloud_kitchen', 'food_truck'
             $table->string('slug', 100)->unique();
@@ -21,8 +21,11 @@ return new class extends Migration
             $table->json('features')->nullable(); // List of features for this service
             $table->integer('display_order')->default(0);
             $table->boolean('is_active')->default(true);
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

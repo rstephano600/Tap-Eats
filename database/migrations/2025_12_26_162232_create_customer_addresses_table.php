@@ -29,13 +29,12 @@ return new class extends Migration
             $table->string('contact_phone', 20)->nullable();
             $table->string('delivery_instructions', 500)->nullable();
             $table->boolean('is_default')->default(false);
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
             $table->timestamps();
+            $table->softDeletes();
 
-            // Geospatial index for location-based queries
-            $table->spatialIndex(['latitude', 'longitude']);
-            $table->index('user_id');
-            $table->index('guest_session_id');
         });
     }
 

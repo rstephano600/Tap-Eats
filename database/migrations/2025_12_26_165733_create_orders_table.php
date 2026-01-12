@@ -72,10 +72,15 @@ public function up()
             $table->text('rejection_reason')->nullable();
             
             // Delivery proof
+            $table->string('delivery_distance')->nullable();
+            $table->timestamp('delivery_time')->nullable();
+            $table->string('delivery_costs', 6)->nullable();
             $table->string('delivery_otp', 6)->nullable();
             $table->string('delivery_photo', 500)->nullable();
             $table->text('delivery_notes')->nullable();
-            
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
             $table->timestamps();
             $table->softDeletes();
 
@@ -85,7 +90,6 @@ public function up()
             $table->index('guest_session_id');
             $table->index('order_type');
             $table->index('created_at');
-            $table->spatialIndex(['delivery_latitude', 'delivery_longitude']);
         });
     }
 
