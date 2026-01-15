@@ -92,10 +92,11 @@ class Supplier extends Model
                     ->withTimestamps();
     }
 
-    public function BusinessType()
-    {
-        return $this->belongsTo(BusinesType::class, 'business_type_id');
-    }
+public function businessType()
+{
+    return $this->belongsTo(BusinessType::class);
+}
+
 
     public function categories()
     {

@@ -131,3 +131,45 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/validate-address', [SupplierLocationController::class, 'validateAddress'])->name('validate-address');
     });
 });
+
+use App\Http\Controllers\Supplier\SupplierController;
+use App\Http\Controllers\Supplier\SupplierFinancialInfoController;
+
+
+Route::middleware(['auth'])
+    ->prefix('supplier')
+    ->name('supplier.')
+    ->group(function () {
+        Route::resource('suppliers', SupplierController::class);
+    });
+
+
+    Route::middleware(['auth'])
+    ->prefix('supplier')
+    ->name('supplier.')
+    ->group(function () {
+        Route::resource('financial', SupplierFinancialInfoController::class);
+        Route::post('financial/{id}/primary', [SupplierFinancialInfoController::class, 'setPrimary']);
+        Route::post('financial/{id}/toggle', [SupplierFinancialInfoController::class, 'toggleActive']);
+    });
+
+
+use App\Http\Controllers\Menu\MenuCategoryController;
+use App\Http\Controllers\Menu\MenuItemController;
+use App\Http\Controllers\Menu\MenuItemVariantController;
+use App\Http\Controllers\Menu\MenuItemAddonController;
+Route::resource('menu-categories', MenuCategoryController::class);
+Route::post('menu-categories/{id}/restore', [MenuCategoryController::class, 'restore'])->name('menu-categories.restore');
+Route::delete('menu-categories/{id}/force-delete', [MenuCategoryController::class, 'forceDelete'])->name('menu-categories.force-delete');
+
+Route::resource('menu-items', MenuItemController::class);
+Route::post('menu-items/{id}/restore', [MenuItemController::class, 'restore'])->name('menu-items.restore');
+Route::delete('menu-items/{id}/force-delete', [MenuItemController::class, 'force-delete'])->name('menu-items.force-delete');
+
+Route::resource('menu-item-variants', MenuItemVariantController::class);
+Route::post('menu-item-variants/{id}/restore', [MenuItemVariantController::class, 'restore'])->name('menu-item-variants.restore');
+Route::delete('menu-item-variants/{id}/force-delete', [MenuItemVariantController::class, 'forceDelete'])->name('menu-item-variants.force-delete');
+
+Route::resource('menu-item-addons', MenuItemAddonController::class);
+Route::post('menu-item-addons/{id}/restore', [MenuItemAddonController::class, 'restore'])->name('menu-item-addons.restore');
+Route::delete('menu-item-addons/{id}/force-delete', [MenuItemAddonController::class, 'force-delete'])->name('menu-item-addons.force-delete');

@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Services\PermissionResolver;
 
-class BusinesType extends Model
+class BusinessType extends Model
 {
     protected $table = 'business_types';
         use SoftDeletes;

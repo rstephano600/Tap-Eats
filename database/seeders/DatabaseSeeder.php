@@ -24,6 +24,10 @@ $this->call([
     PermissionSeeder::class,
     RolePermissionSeeder::class,
     UserRoleSeeder::class,
+    MenuItemSeeder::class,
+    MenuDataSeeder::class,
+    MenuItemVariantSeeder::class,
+    MenuItemAddonSeeder::class,
 ]);
 
     }

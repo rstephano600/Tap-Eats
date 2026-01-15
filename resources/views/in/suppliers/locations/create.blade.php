@@ -26,6 +26,8 @@
                             <i class="bi bi-info-circle me-2"></i>
                             <strong>Search your location:</strong> Start typing your address below to search using Google Maps
                         </div>
+<input type="hidden" name="latitude" id="latitude" value="{{ old('latitude') }}">
+<input type="hidden" name="longitude" id="longitude" value="{{ old('longitude') }}">
 
                         <div class="row mb-4">
                             <div class="col-md-12">
@@ -175,14 +177,20 @@
                         <input type="hidden" id="longitude" name="longitude" value="{{ old('longitude') }}">
 
                         <!-- Map Preview -->
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label class="form-label fw-bold">Location Preview</label>
                             <div id="map" style="height: 400px; width: 100%;" class="border rounded"></div>
                             <small class="text-muted">
                                 <i class="bi bi-info-circle me-1"></i>
                                 Map will update when you select a location from search
                             </small>
-                        </div>
+                        </div> -->
+
+                        <div class="mb-3">
+    <label class="form-label fw-semibold">Select Location on Map</label>
+    <div id="map" style="height: 350px; width: 100%;" class="border rounded"></div>
+</div>
+
 
                         <!-- Primary Location Checkbox -->
                         <div class="mb-4">
@@ -319,6 +327,46 @@
             return false;
         }
     });
+
+    
+let map, marker;
+
+function initMap() {
+    const defaultPosition = { lat: -6.7924, lng: 39.2083 }; // Dar es Salaam
+
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: defaultPosition,
+        zoom: 13,
+    });
+
+    marker = new google.maps.Marker({
+        position: defaultPosition,
+        map: map,
+        draggable: true
+    });
+
+    // Set initial values
+    document.getElementById('latitude').value = defaultPosition.lat;
+    document.getElementById('longitude').value = defaultPosition.lng;
+
+    // When marker is dragged
+    marker.addListener('dragend', function () {
+        const position = marker.getPosition();
+        document.getElementById('latitude').value = position.lat();
+        document.getElementById('longitude').value = position.lng();
+    });
+
+    // When clicking on map
+    map.addListener('click', function (event) {
+        marker.setPosition(event.latLng);
+        document.getElementById('latitude').value = event.latLng.lat();
+        document.getElementById('longitude').value = event.latLng.lng();
+    });
+}
+
+window.onload = initMap;
+
+
 </script>
 @endpush
 @endsection

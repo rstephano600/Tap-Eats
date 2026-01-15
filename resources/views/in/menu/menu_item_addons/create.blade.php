@@ -1,0 +1,27 @@
+@extends('layouts.app')
+
+@section('title', 'Create Add-on')
+
+@section('content')
+<div class="container-fluid">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold text-darkblue">
+                <i class="bi bi-plus-circle me-2 text-accent"></i> Create Add-on
+            </h5>
+        </div>
+
+        <div class="card-body">
+            <form action="{{ route('menu-item-addons.store') }}" method="POST">
+                @csrf
+                @include('in.menu.menu_item_addons.form')
+                <div class="text-end">
+                    <button class="btn btn-accent">
+                        <i class="bi bi-check-lg me-1"></i> Save Add-on
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection

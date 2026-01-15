@@ -11,6 +11,27 @@
             <i class="bi bi-grid-1x2 me-2"></i> Dashboard
         </a>
 
+        <a href="{{ route('menu-items.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. menu items
+        </a>
+        <a href="{{ route('menu-item-variants.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. menu items variants
+        </a>
+        <a href="{{ route('menu-item-addons.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. menu items Addons
+        </a>
+        <a href="{{ route('menu-categories.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. MEnu categories
+        </a>
+        <a href="{{ route('supplier.suppliers.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. your Business
+        </a>
+        <a href="{{ route('supplier.locations.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. your Business Location
+        </a>
+        <a href="{{ route('supplier.financial.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. your Financial Informations
+        </a>
         <a href="{{ route('suppliers.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
             <i class="bi bi-grid-1x2 me-2"></i> M. Suppliers
         </a>
