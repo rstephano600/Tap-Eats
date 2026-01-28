@@ -11,6 +11,9 @@
             <i class="bi bi-grid-1x2 me-2"></i> Dashboard
         </a>
 
+        <a href="{{ route('orders.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. orders
+        </a>
         <a href="{{ route('menu-items.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
             <i class="bi bi-grid-1x2 me-2"></i> M. menu items
         </a>

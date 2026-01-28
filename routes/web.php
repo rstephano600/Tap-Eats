@@ -173,3 +173,25 @@ Route::delete('menu-item-variants/{id}/force-delete', [MenuItemVariantController
 Route::resource('menu-item-addons', MenuItemAddonController::class);
 Route::post('menu-item-addons/{id}/restore', [MenuItemAddonController::class, 'restore'])->name('menu-item-addons.restore');
 Route::delete('menu-item-addons/{id}/force-delete', [MenuItemAddonController::class, 'force-delete'])->name('menu-item-addons.force-delete');
+
+
+use App\Http\Controllers\Order\OrderController;
+Route::middleware(['auth'])->group(function () {
+    // Order Management Routes
+    Route::resource('orders', OrderController::class);
+    
+    // Additional Order Actions
+    Route::prefix('orders')->name('orders.')->group(function () {
+        // Status Management
+        Route::patch('{order}/update-status', [OrderController::class, 'updateStatus'])
+            ->name('update-status');
+        
+        // Payment Status
+        Route::patch('{order}/update-payment', [OrderController::class, 'updatePaymentStatus'])
+            ->name('update-payment');
+        
+        // Order Statistics
+        Route::get('statistics/dashboard', [OrderController::class, 'statistics'])
+            ->name('statistics');
+    });
+});
