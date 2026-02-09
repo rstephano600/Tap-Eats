@@ -468,7 +468,7 @@
                 <div class="mt-2 pt-2 border-top">
                     <div class="d-flex justify-content-between small text-muted">
                         <span>Subtotal:</span>
-                        <span class="fw-semibold supplier-subtotal-{{ $supplierId }}">$0.00</span>
+                        <span class="fw-semibold supplier-subtotal-{{ $supplierId }}">0.00 Tsh</span>
                     </div>
                 </div>
             </div>
@@ -482,24 +482,24 @@
                     <div class="mt-3">
                         <div class="price-row">
                             <span>Subtotal:</span>
-                            <span id="summarySubtotal">$0.00</span>
+                            <span id="summarySubtotal">0.00 Tsh</span>
                         </div>
                         <div class="price-row">
                             <span>Delivery Fee:</span>
-                            <span id="summaryDeliveryFee">$0.00</span>
+                            <span id="summaryDeliveryFee">0.00 Tsh</span>
                         </div>
                         <div class="price-row">
                             <span>Service Fee:</span>
-                            <span id="summaryServiceFee">$0.00</span>
+                            <span id="summaryServiceFee">0.00 Tsh</span>
                         </div>
                         <div class="price-row">
                             <span>Tax ({{ $taxRate ?? 0 }}%):</span>
-                            <span id="summaryTax">$0.00</span>
+                            <span id="summaryTax">0.00 Tsh</span>
                         </div>
                         
                         <div class="price-row total-row text-primary">
                             <span>Total:</span>
-                            <span id="summaryTotal">$0.00</span>
+                            <span id="summaryTotal">0.00 Tsh</span>
                         </div>
                     </div>
 
@@ -588,10 +588,10 @@ function renderOrderSummary() {
                                  style="width: 40px; height: 40px; object-fit: cover;" alt="${item.name}">
                             <div class="flex-fill">
                                 <div class="small fw-semibold">${item.name}</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">Qty: ${item.quantity} × $${item.price.toFixed(2)}</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Qty: ${item.quantity} × $${item.price.toFixed(2)} Tsh</div>
                             </div>
                         </div>
-                        <div class="text-primary fw-bold ms-2">$${(item.price * item.quantity).toFixed(2)}</div>
+                        <div class="text-primary fw-bold ms-2">${(item.price * item.quantity).toFixed(2)} Tsh</div>
                     </div>
                 `).join('');
 
@@ -599,7 +599,7 @@ function renderOrderSummary() {
                 const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 const subtotalElement = document.querySelector(`.supplier-subtotal-${supplierId}`);
                 if (subtotalElement) {
-                    subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+                    subtotalElement.textContent = `${subtotal.toFixed(2)}`;
                 }
             }
         });
@@ -627,17 +627,17 @@ function calculateTotals() {
     const total = subtotal + deliveryFee + serviceFee + tax;
 
     // Update the UI display
-    document.getElementById('summarySubtotal').textContent = `$${subtotal.toFixed(2)}`;
-    document.getElementById('summaryDeliveryFee').textContent = `$${deliveryFee.toFixed(2)}`;
+    document.getElementById('summarySubtotal').textContent = `${subtotal.toFixed(2)} Tsh`;
+    document.getElementById('summaryDeliveryFee').textContent = `${deliveryFee.toFixed(2)} Tsh`;
     
     if (!isSingleSupplier && isDelivery) {
         // Show delivery fee breakdown
-        document.getElementById('summaryDeliveryFee').innerHTML = `$${deliveryFee.toFixed(2)} <small class="text-muted">(${uniqueSuppliers} restaurants)</small>`;
+        document.getElementById('summaryDeliveryFee').innerHTML = `${deliveryFee.toFixed(2)} <small class="text-muted">(${uniqueSuppliers} restaurants)</small>`;
     }
     
-    document.getElementById('summaryServiceFee').textContent = `$${serviceFee.toFixed(2)}`;
-    document.getElementById('summaryTax').textContent = `$${tax.toFixed(2)}`;
-    document.getElementById('summaryTotal').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('summaryServiceFee').textContent = `${serviceFee.toFixed(2)} Tsh`;
+    document.getElementById('summaryTax').textContent = `${tax.toFixed(2)} Tsh`;
+    document.getElementById('summaryTotal').textContent = `${total.toFixed(2)} Tsh`;
 
     // Update Hidden Inputs
     document.getElementById('hiddenSubtotal').value = subtotal.toFixed(2);

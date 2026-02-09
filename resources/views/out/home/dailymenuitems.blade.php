@@ -228,10 +228,10 @@
                         <label class="form-label small fw-semibold">Price Range</label>
                         <select name="price_range" class="form-select">
                             <option value="">All Prices</option>
-                            <option value="under_10" {{ $priceRange == 'under_10' ? 'selected' : '' }}>Under $10</option>
-                            <option value="10_20" {{ $priceRange == '10_20' ? 'selected' : '' }}>$10 - $20</option>
-                            <option value="20_30" {{ $priceRange == '20_30' ? 'selected' : '' }}>$20 - $30</option>
-                            <option value="above_30" {{ $priceRange == 'above_30' ? 'selected' : '' }}>Above $30</option>
+                            <option value="under_10000" {{ $priceRange == 'under_10000' ? 'selected' : '' }}>Under 10,000</option>
+                            <option value="10000_20000" {{ $priceRange == '10000_20000' ? 'selected' : '' }}>10,000 - 20,000</option>
+                            <option value="20000_30000" {{ $priceRange == '20000_30000' ? 'selected' : '' }}>20,000 - 30,000</option>
+                            <option value="above_30000" {{ $priceRange == 'above_30000' ? 'selected' : '' }}>Above 30,000</option>
                         </select>
                     </div>
 
@@ -256,7 +256,7 @@
                         </p>
                         <p class="mb-2">
                             <i class="bi bi-truck text-success"></i> 
-                            Free delivery over $25
+                            Free delivery over 10,000 Tsh
                         </p>
                         <p class="mb-0">
                             <i class="bi bi-shield-check text-info"></i> 
@@ -380,15 +380,15 @@
                                                     @if($item->has_discount)
                                                         <div>
                                                             <span class="text-decoration-line-through text-muted small">
-                                                                ${{ number_format($item->price, 2) }}
+                                                                {{ number_format($item->price, 2) }} Tsh
                                                             </span>
                                                             <div class="price-tag d-inline-block">
-                                                                ${{ number_format($item->discounted_price, 2) }}
+                                                                {{ number_format($item->discounted_price, 2) }} Tsh
                                                             </div>
                                                         </div>
                                                     @else
                                                         <div class="price-tag">
-                                                            ${{ number_format($item->price, 2) }}
+                                                            {{ number_format($item->price, 2) }} Tsh
                                                         </div>
                                                     @endif
                                                 </div>
@@ -453,7 +453,7 @@
         <div class="border-top p-3">
             <div class="d-flex justify-content-between mb-3">
                 <span class="fw-semibold">Total:</span>
-                <span id="cartTotal" class="fw-bold fs-5 text-primary">$0.00</span>
+                <span id="cartTotal" class="fw-bold fs-5 text-primary">0.00 Tsh</span>
             </div>
             
             <button onclick="proceedToCheckout()" id="checkoutBtn" class="btn btn-primary w-100 py-3">
@@ -547,7 +547,7 @@
         }
         
         // Update total
-        cartTotal.textContent = `$${total.toFixed(2)}`;
+        cartTotal.textContent = `${total.toFixed(2)} Tsh`;
         
         // Enable/disable checkout button
         checkoutBtn.disabled = total < MIN_ORDER_AMOUNT;
@@ -563,7 +563,7 @@
                             <img src="${item.image}" class="rounded" style="width: 60px; height: 60px; object-fit: cover;" alt="${item.name}">
                             <div class="flex-fill ms-3">
                                 <h6 class="mb-1">${item.name}</h6>
-                                <p class="mb-0 text-primary fw-bold">$${item.price.toFixed(2)}</p>
+                                <p class="mb-0 text-primary fw-bold">${item.price.toFixed(2)} Tsh</p>
                             </div>
                             <button onclick="removeFromCart(${item.id})" class="btn btn-sm btn-outline-danger">
                                 <i class="bi bi-trash"></i>
@@ -575,7 +575,7 @@
                                 <button class="btn btn-sm btn-outline-secondary" disabled>${item.quantity}</button>
                                 <button onclick="updateQuantity(${item.id}, 1)" class="btn btn-sm btn-outline-secondary">+</button>
                             </div>
-                            <span class="fw-bold">$${(item.price * item.quantity).toFixed(2)}</span>
+                            <span class="fw-bold">${(item.price * item.quantity).toFixed(2)} Tsh</span>
                         </div>
                     </div>
                 </div>

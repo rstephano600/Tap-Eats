@@ -96,7 +96,7 @@
                                     <!-- Total Amount -->
                                     <div class="mt-2">
                                         <h5 class="text-primary mb-0">
-                                            ${{ number_format($order->total_amount, 2) }}
+                                            {{ number_format($order->total_amount, 2) }} Tsh
                                         </h5>
                                     </div>
                                 </div>

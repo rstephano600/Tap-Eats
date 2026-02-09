@@ -212,7 +212,7 @@
                                 <label class="form-label">Attachments (Optional)</label>
                                 <input type="file" name="attachments[]" class="form-control" 
                                        multiple accept="image/*,application/pdf">
-                                <small class="text-muted">You can upload images or PDF files (Max 5MB each)</small>
+                                <small class="text-muted">You can upload images or PDF files (Max 2MB each)</small>
                                 @error('attachments.*')
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror

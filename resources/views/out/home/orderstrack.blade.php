@@ -199,11 +199,11 @@
 
                                 <div class="flex-fill">
                                     <h6 class="mb-0">{{ $item->item_name }}</h6>
-                                    <small class="text-muted">Qty: {{ $item->quantity }} × ${{ number_format($item->unit_price, 2) }}</small>
+                                    <small class="text-muted">Qty: {{ $item->quantity }} × {{ number_format($item->unit_price, 2) }} Tsh</small>
                                 </div>
 
                                 <div class="text-end">
-                                    <strong>${{ number_format($item->subtotal, 2) }}</strong>
+                                    <strong>{{ number_format($item->subtotal, 2) }} Tsh</strong>
                                 </div>
                             </div>
                         @endforeach
@@ -217,27 +217,27 @@
 
                         <div class="d-flex justify-content-between mb-2">
                             <span>Subtotal:</span>
-                            <span>${{ number_format($order->subtotal, 2) }}</span>
+                            <span>{{ number_format($order->subtotal, 2) }} Tsh</span>
                         </div>
 
                         <div class="d-flex justify-content-between mb-2">
                             <span>Delivery Fee:</span>
-                            <span>${{ number_format($order->delivery_fee, 2) }}</span>
+                            <span>{{ number_format($order->delivery_fee, 2) }} Tsh</span>
                         </div>
 
                         <div class="d-flex justify-content-between mb-2">
                             <span>Service Fee:</span>
-                            <span>${{ number_format($order->service_fee, 2) }}</span>
+                            <span>{{ number_format($order->service_fee, 2) }} Tsh</span>
                         </div>
 
                         <div class="d-flex justify-content-between mb-3">
                             <span>Tax:</span>
-                            <span>${{ number_format($order->tax_amount, 2) }}</span>
+                            <span>{{ number_format($order->tax_amount, 2) }} Tsh</span>
                         </div>
 
                         <div class="d-flex justify-content-between border-top pt-3">
                             <strong>Total:</strong>
-                            <strong class="text-primary fs-5">${{ number_format($order->total_amount, 2) }}</strong>
+                            <strong class="text-primary fs-5">{{ number_format($order->total_amount, 2) }} Tsh</strong>
                         </div>
 
                         <div class="mt-3 pt-3 border-top">

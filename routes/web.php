@@ -44,7 +44,7 @@ Route::get('/aboutus', [HomesupportController::class, 'aboutus'])->name('aboutus
 
 Route::get('/index/restaurants', [AuthenticationController::class, 'public'])->name('restaurants.public');
 Route::get('/catering', [AuthenticationController::class, 'index'])->name('catering');
-Route::get('/about', [AuthenticationController::class, 'about'])->name('about');
+
 Route::get('/contact', [AuthenticationController::class, 'index'])->name('contact');
 Route::get('/search', [AuthenticationController::class, 'index'])->name('search');
 

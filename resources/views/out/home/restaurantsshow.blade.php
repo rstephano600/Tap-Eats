@@ -195,7 +195,7 @@
 
                                         <div class="d-flex justify-content-between align-items-center">
                                             <span class="fw-bold text-primary">
-                                                ${{ number_format($item->discounted_price ?? $item->price, 2) }}
+                                                {{ number_format($item->discounted_price ?? $item->price, 2) }} Tsh
                                             </span>
 
                                             <button 
@@ -238,7 +238,7 @@
         <div class="border-top p-3">
             <div class="d-flex justify-content-between mb-3">
                 <span class="fw-semibold">Total:</span>
-                <span id="cartTotal" class="fw-bold fs-5 text-primary">$0.00</span>
+                <span id="cartTotal" class="fw-bold fs-5 text-primary">0.00 Tsh</span>
             </div>
             
             <button onclick="proceedToCheckout()" id="checkoutBtn" class="btn checkout-btn w-100 py-3" disabled>
@@ -247,7 +247,7 @@
             </button>
 
             <div class="text-center mt-2">
-                <small class="text-muted">Minimum order: $10.00</small>
+                <small class="text-muted">Minimum order: 10000.00 Tsh</small>
             </div>
         </div>
     </div>
@@ -277,7 +277,7 @@
             price: parseFloat(price),
             image: image,
             quantity: 1,
-            supplier_id: supplier_id  // Now properly captured
+            supplier_id: supplier_id 
         });
     }
     
@@ -338,7 +338,7 @@
         }
         
         // Update total
-        cartTotal.textContent = `$${total.toFixed(2)}`;
+        cartTotal.textContent = `${total.toFixed(2)} Tsh`;
         
         // Enable/disable checkout button
         if (total >= MIN_ORDER_AMOUNT) {
@@ -359,7 +359,7 @@
                             <div class="flex-fill ms-3">
                                 <h6 class="mb-1">${item.name}</h6>
                                 <h6 class="mb-1">${item.supplier_id}</h6>
-                                <p class="mb-0 text-primary fw-bold">$${item.price.toFixed(2)}</p>
+                                <p class="mb-0 text-primary fw-bold">${item.price.toFixed(2)} Tsh</p>
                             </div>
                             <button onclick="removeFromCart(${item.id})" class="btn btn-sm btn-outline-danger">
                                 <i class="bi bi-trash"></i>
@@ -371,7 +371,7 @@
                                 <button class="btn btn-sm btn-outline-secondary" disabled>${item.quantity}</button>
                                 <button onclick="updateQuantity(${item.id}, 1)" class="btn btn-sm btn-outline-secondary">+</button>
                             </div>
-                            <span class="fw-bold">$${(item.price * item.quantity).toFixed(2)}</span>
+                            <span class="fw-bold">${(item.price * item.quantity).toFixed(2)} Tsh</span>
                         </div>
                     </div>
                 </div>
