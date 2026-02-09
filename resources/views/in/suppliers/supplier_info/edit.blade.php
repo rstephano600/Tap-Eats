@@ -16,7 +16,7 @@
             <h5 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-2 text-accent"></i> Edit supplier</h5>
         </div>
         <div class="card-body p-4 p-lg-5">
-            <form action="{{ route('suppliers.update', $supplier) }}" method="POST">
+            <form action="{{ route('suppliers.update', $supplier) }}" method="POST" enctype="multipart/form-data">
                 @csrf @method('PUT')
 
                 <div class="row">
@@ -39,6 +39,27 @@
                             </select>
                         </div>
                     </div>
+
+                    <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label fw-bold text-darkblue">Business logo Url <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                        <input type="file" name="logo_url" class="form-control form-control-lg" accept="image/*">
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label fw-bold text-darkblue">Business Cover Profile</label>
+                        <input type="file" name="cover_image" class="form-control form-control-lg" accept="image/*">
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label fw-bold text-darkblue">Business Gallery Images</label>
+                        <input type="file" name="gallery_images[]" class="form-control form-control-lg" accept="image/*" multiple>
+                    </div>
+                </div>
+
 
                     <div class="col-12 mb-4">
                         <label class="form-label fw-bold text-darkblue">Description</label>

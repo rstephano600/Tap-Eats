@@ -16,8 +16,20 @@
             <h5 class="mb-0 fw-bold"><i class="bi bi-shield-plus me-2 text-accent"></i> Register New supplier</h5>
         </div>
         <div class="card-body p-4 p-lg-5">
-            <form action="{{ route('suppliers.store') }}" method="POST">
+            <form action="{{ route('suppliers.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
+
+                @if ($errors->any())
+    <div class="alert alert-danger">
+        <strong>Whoops! Something went wrong.</strong>
+        <ul class="mt-2">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
                 <div class="row">
                     <div class="col-md-6 mb-4">
                         <label class="form-label fw-bold text-darkblue">Business Name <span class="text-danger">*</span></label>
@@ -49,6 +61,26 @@
                     <div class="col-md-6 mb-4">
                         <label class="form-label fw-bold text-darkblue">Business Phone</label>
                             <input type="phone" name="contact_phone" class="form-control form-control-lg" placeholder="e.g., 0657856790" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label fw-bold text-darkblue">Business logo Url <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                        <input type="file" name="logo_url" class="form-control form-control-lg" accept="image/*">
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label fw-bold text-darkblue">Business Cover Profile</label>
+                        <input type="file" name="cover_image" class="form-control form-control-lg" accept="image/*">
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label fw-bold text-darkblue">Business Gallery Images</label>
+                        <input type="file" name="gallery_images[]" class="form-control form-control-lg" accept="image/*" multiple>
                     </div>
                 </div>
 

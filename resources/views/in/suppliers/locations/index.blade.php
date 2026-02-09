@@ -10,7 +10,7 @@
             <h5 class="mb-0 fw-bold text-darkblue">
                 <i class="bi bi-geo-alt me-2 text-accent"></i> Supplier Locations
             </h5>
-            <a href="{{ route('supplier.locations.create') }}" class="btn btn-accent shadow-sm">
+            <a href="{{ route('createsupplierlocations') }}" class="btn btn-accent shadow-sm">
                 <i class="bi bi-plus-lg me-1"></i> Add Location
             </a>
         </div>
@@ -33,13 +33,13 @@
             <div class="row mb-3">
                 <div class="col-md-12">
                     <div class="btn-group" role="group">
-                        <a href="{{ route('supplier.locations.index') }}" class="btn btn-sm btn-outline-primary active">
+                        <a href="{{ route('supplierlocations') }}" class="btn btn-sm btn-outline-primary active">
                             <i class="bi bi-list-ul me-1"></i> All
                         </a>
-                        <a href="{{ route('supplier.locations.index', ['status' => 'active']) }}" class="btn btn-sm btn-outline-success">
+                        <a href="{{ route('supplierlocations', ['status' => 'active']) }}" class="btn btn-sm btn-outline-success">
                             <i class="bi bi-check-circle me-1"></i> Active
                         </a>
-                        <a href="{{ route('supplier.locations.index', ['status' => 'inactive']) }}" class="btn btn-sm btn-outline-secondary">
+                        <a href="{{ route('supplierlocations', ['status' => 'inactive']) }}" class="btn btn-sm btn-outline-secondary">
                             <i class="bi bi-x-circle me-1"></i> Inactive
                         </a>
                     </div>
@@ -93,7 +93,7 @@
                                             <i class="bi bi-star-fill me-1"></i>Primary
                                         </span>
                                     @else
-                                        <form action="{{ route('supplier.locations.set-primary', $location->id) }}" 
+                                        <form action="{{ route('setprimarysupplierlocations', $location->id) }}" 
                                               method="POST" class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-outline-secondary" 
@@ -120,11 +120,11 @@
                                 </td>
                                 <td class="text-end pe-3">
                                     <div class="btn-group">
-                                        <a href="{{ route('supplier.locations.show', $location->id) }}" 
+                                        <a href="{{ route('showsupplierlocations', $location->id) }}" 
                                            class="btn btn-sm btn-outline-info" title="View">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <a href="{{ route('supplier.locations.edit', $location->id) }}" 
+                                        <a href="{{ route('editsupplierlocations', $location->id) }}" 
                                            class="btn btn-sm btn-outline-primary" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
@@ -136,7 +136,7 @@
                                                 <i class="bi bi-{{ $location->is_active ? 'toggle-on' : 'toggle-off' }}"></i>
                                             </button>
                                         </form>
-                                        <form action="{{ route('supplier.locations.destroy', $location->id) }}" 
+                                        <form action="{{ route('destroysupplierlocations', $location->id) }}" 
                                               method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')

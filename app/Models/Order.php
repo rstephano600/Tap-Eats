@@ -242,4 +242,43 @@ class Order extends Model
     {
         return $this->orderItems->sum('quantity');
     }
+
+
+    public function driver()
+    {
+        return $this->belongsTo(User::class, 'driver_id');
+    }
+
+    public function supportTickets()
+    {
+        return $this->hasMany(SupportTicket::class);
+    }
+
+    public function scopeInProgress($query)
+    {
+        return $query->whereIn('order_status', ['confirmed', 'preparing', 'ready', 'dispatched']);
+    }
+
+    public function scopeCompleted($query)
+    {
+        return $query->whereIn('order_status', ['delivered', 'completed']);
+    }
+
+    /**
+     * Accessors & Mutators
+     */
+    public function getStatusLabelAttribute()
+    {
+        return ucfirst(str_replace('_', ' ', $this->order_status));
+    }
+
+    public function getIsDeliveryAttribute()
+    {
+        return $this->serviceType && stripos($this->serviceType->name, 'delivery') !== false;
+    }
+
+    public function getCanBeCancelledAttribute()
+    {
+        return in_array($this->order_status, ['pending', 'confirmed']);
+    }
 }

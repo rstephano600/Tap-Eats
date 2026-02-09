@@ -12,7 +12,7 @@
         <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
         <link href="{{ asset('assets/css/all.min.css') }}" rel="stylesheet">
         <link href="{{ asset('assets/css/select2.min.css') }}" rel="stylesheet">
-        <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/web-app.css') }}" rel="stylesheet">
             <!-- Select2 CSS -->
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
@@ -30,7 +30,29 @@
 
     </head>
 <body>
-        
-welcome
+
+    <div id="wrapper">
+    @include('layouts.partials.web-aside-bar')
+
+    <div id="page-content-wrapper" class="d-flex flex-column">
+        @include('layouts.partials.web-header')
+
+        <main class="container-fluid py-4 flex-grow-1">
+            @yield('content')
+        </main>
+
+        @include('layouts.partials.web-footer')
+    </div>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.getElementById('wrapper').classList.toggle('toggled');
+        });
+    </script>
 </body>
 </html>

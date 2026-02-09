@@ -113,6 +113,10 @@ public function businessType()
     {
         return $this->hasMany(MenuItem::class);
     }
+    public function foods()
+    {
+        return $this->hasMany(MenuItem::class);
+    }
 
     public function orders()
     {

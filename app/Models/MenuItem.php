@@ -72,11 +72,12 @@ class MenuItem extends Model
     {
         return $this->belongsTo(MenuCategory::class, 'menu_category_id');
     }
+public function menuCategory(): BelongsTo
+{
+    return $this->belongsTo(MenuCategory::class, 'menu_category_id');
+}
 
-    public function menuCategory()
-    {
-        return $this->belongsTo(MenuCategory::class);
-    }
+
 
     public function variants()
     {

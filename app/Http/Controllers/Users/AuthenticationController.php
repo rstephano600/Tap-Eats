@@ -45,7 +45,7 @@ class AuthenticationController extends Controller
             case 'deliver':
                 return redirect()->route('deliver.dashboard');
             default:
-                return redirect()->route('home');
+                return redirect()->route('dashboard');
         }
     }
 

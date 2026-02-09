@@ -29,7 +29,7 @@
         <a href="{{ route('supplier.suppliers.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
             <i class="bi bi-grid-1x2 me-2"></i> M. your Business
         </a>
-        <a href="{{ route('supplier.locations.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+        <a href="{{ route('supplierlocations') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
             <i class="bi bi-grid-1x2 me-2"></i> M. your Business Location
         </a>
         <a href="{{ route('supplier.financial.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
@@ -38,7 +38,7 @@
         <a href="{{ route('suppliers.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
             <i class="bi bi-grid-1x2 me-2"></i> M. Suppliers
         </a>
-        <a href="{{ route('supplier.locations.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+        <a href="{{ route('supplierlocations') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
             <i class="bi bi-grid-1x2 me-2"></i> M. Suppliers Locations
         </a>
         <a href="{{ route('busines-types.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">

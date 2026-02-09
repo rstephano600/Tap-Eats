@@ -1,0 +1,195 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Supplier;
+use App\Models\Food;
+use App\Models\Order;
+use App\Models\OrderItem;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+class MenuController extends Controller
+{
+    /**
+     * Display the menu page with suppliers and foods
+     */
+    public function index()
+    {
+        // Get all verified suppliers with their foods
+        $suppliers = Supplier::where('is_verified', true)
+            ->with('foods')
+            ->get();
+
+        // Get all available foods with their supplier relationship
+        $foods = Food::where('available', true)
+            ->with('supplier')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Get unique categories from foods
+        $categories = Food::whereNotNull('category')
+            ->distinct()
+            ->pluck('category')
+            ->toArray();
+
+        return view('menu', compact('suppliers', 'foods', 'categories'));
+    }
+
+    /**
+     * Create a new order from cart
+     */
+    public function createOrder(Request $request)
+    {
+        try {
+            $request->validate([
+                'cart' => 'required|array',
+                'cart.*.id' => 'required|exists:foods,id',
+                'cart.*.quantity' => 'required|integer|min:1',
+                'supplier_id' => 'required|exists:suppliers,user_id',
+                'business_id' => 'required|exists:suppliers,id',
+                'customer_details' => 'required|array',
+                'customer_details.full_name' => 'required|string|max:255',
+                'customer_details.phone' => 'required|string|max:20',
+                'customer_details.address' => 'required|string',
+                'customer_details.region' => 'required|string',
+                'customer_details.payment_method' => 'required|in:cash,mobile_money',
+                'customer_details.notes' => 'nullable|string',
+            ]);
+
+            // Check if user is authenticated
+            if (!Auth::check()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please login to place an order'
+                ], 401);
+            }
+
+            DB::beginTransaction();
+
+            // Calculate total amount
+            $totalAmount = 0;
+            foreach ($request->cart as $item) {
+                $food = Food::find($item['id']);
+                if (!$food || !$food->available) {
+                    throw new \Exception("Food item {$food->food_name} is no longer available");
+                }
+                $totalAmount += $food->price * $item['quantity'];
+            }
+
+            // Create the order
+            $order = Order::create([
+                'customer_id' => Auth::id(),
+                'supplier_id' => $request->supplier_id,
+                'business_id' => $request->business_id,
+                'total_amount' => $totalAmount,
+                'status' => 'pending',
+                'customer_name' => $request->customer_details['full_name'],
+                'customer_phone' => $request->customer_details['phone'],
+                'delivery_address' => $request->customer_details['address'],
+                'delivery_region' => $request->customer_details['region'],
+                'payment_method' => $request->customer_details['payment_method'],
+                'notes' => $request->customer_details['notes'] ?? null,
+            ]);
+
+            // Create order items
+            foreach ($request->cart as $item) {
+                $food = Food::find($item['id']);
+                
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'food_id' => $food->id,
+                    'quantity' => $item['quantity'],
+                    'price' => $food->price,
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Order placed successfully!',
+                'order_id' => $order->id,
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 400);
+        }
+    }
+
+    /**
+     * Show order details
+     */
+    public function showOrder($id)
+    {
+        $order = Order::with(['orderItems.food', 'supplier', 'customer'])
+            ->findOrFail($id);
+
+        // Check if the user is authorized to view this order
+        if ($order->customer_id !== Auth::id() && $order->supplier_id !== Auth::id()) {
+            abort(403, 'Unauthorized access');
+        }
+
+        return view('orders.show', compact('order'));
+    }
+
+    /**
+     * Get customer orders
+     */
+    public function myOrders()
+    {
+        $orders = Order::where('customer_id', Auth::id())
+            ->with(['orderItems.food', 'supplier'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('orders.index', compact('orders'));
+    }
+
+    /**
+     * Search foods by query
+     */
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+        
+        $foods = Food::where('available', true)
+            ->where('food_name', 'LIKE', "%{$query}%")
+            ->with('supplier')
+            ->get();
+
+        return response()->json($foods);
+    }
+
+    /**
+     * Filter foods by category
+     */
+    public function filterByCategory($category)
+    {
+        $foods = Food::where('available', true)
+            ->where('category', $category)
+            ->with('supplier')
+            ->get();
+
+        return response()->json($foods);
+    }
+
+    /**
+     * Get foods by supplier
+     */
+    public function foodsBySupplier($supplierId)
+    {
+        $foods = Food::where('available', true)
+            ->where('supplier_id', $supplierId)
+            ->with('supplier')
+            ->get();
+
+        return response()->json($foods);
+    }
+}

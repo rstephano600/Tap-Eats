@@ -3,203 +3,92 @@
 namespace App\Http\Controllers\Supplier;
 
 use App\Http\Controllers\Controller;
-use App\Models\Supplier;
 use App\Models\SupplierLocation;
+use App\Models\Supplier; // Assuming you need this for dropdowns
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class SupplierLocationController extends Controller
 {
-    /**
-     * Display supplier locations (HTML)
-     */
-    public function index(Request $request)
+    // 1. List all locations
+    public function supplierlocations()
     {
-        $supplierId = $this->resolveSupplierId($request);
-
-        $locations = SupplierLocation::where('supplier_id', $supplierId)
-            ->orderByDesc('is_primary')
-            ->latest()
-            ->paginate(10);
-
+        $locations = SupplierLocation::with('supplier')->paginate(15);
         return view('in.suppliers.locations.index', compact('locations'));
     }
 
-    /**
-     * Show create form (HTML)
-     */
-    public function create()
+    // 2. Show the form to create a new location
+    public function createsupplierlocations()
     {
-        return view('in.suppliers.locations.create');
+        $suppliers = Supplier::all(); // Needed to select which supplier owns this location
+        return view('in.suppliers.locations.create', compact('suppliers'));
     }
 
-    /**
-     * Store location (JSON – AJAX)
-     */
-    public function store(Request $request)
+    // 3. Save the new location
+    public function storesupplierlocations(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'address_line1' => 'required|string|max:255',
-            'city' => 'required|string|max:100',
-            'postal_code' => 'required|string|max:20',
-            'latitude' => 'required|numeric|between:-90,90',
-            'longitude' => 'required|numeric|between:-180,180',
-            'is_primary' => 'boolean',
+        $validated = $request->validate([
+            'supplier_id'   => 'required|exists:suppliers,id',
+            'location_name' => 'required|string|max:255',
+            'address_line1' => 'required|string',
+            'city'          => 'required|string',
+            'country'       => 'required|string',
+            'latitude'      => 'nullable|numeric',
+            'longitude'     => 'nullable|numeric',
+            'postal_code'     => 'nullable|numeric',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+        // Add creator ID automatically
+        $validated['created_by'] = Auth::id();
+        $validated['is_active'] = $request->has('is_active');
+        $validated['is_primary'] = $request->has('is_primary');
 
-        DB::transaction(function () use ($request, &$location) {
-            $supplierId = $this->resolveSupplierId($request);
+        SupplierLocation::create($validated);
 
-            if ($request->is_primary) {
-                SupplierLocation::where('supplier_id', $supplierId)
-                    ->update(['is_primary' => false]);
-            }
-
-            $location = SupplierLocation::create([
-                'supplier_id' => $supplierId,
-                'address_line1' => $request->address_line1,
-                'city' => $request->city,
-                'postal_code' => $request->postal_code,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
-                'is_primary' => $request->is_primary ?? false,
-                'is_active' => true,
-                'status' => 'active',
-                'created_by' => Auth::id(),
-            ]);
-        });
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Location added successfully',
-            'data' => $location
-        ], 201);
+        return redirect()->route('supplierlocations')->with('success', 'Location created successfully!');
     }
 
-    /**
-     * Show location details (HTML)
-     */
-    public function show($id)
+    // 4. Show a single location details
+    public function showsupplierlocations($id)
     {
-        $location = $this->findLocation($id);
-
+        $location = SupplierLocation::with(['supplier', 'creator', 'updater'])->findOrFail($id);
         return view('in.suppliers.locations.show', compact('location'));
     }
 
-    /**
-     * Show edit form (HTML)
-     */
-    public function edit($id)
+    // 5. Show the edit form
+    public function editsupplierlocations($id)
     {
-        $location = $this->findLocation($id);
-
-        return view('in.suppliers.locations.edit', compact('location'));
+        $location = SupplierLocation::findOrFail($id);
+        $suppliers = Supplier::all();
+        return view('in.suppliers.locations.edit', compact('location', 'suppliers'));
     }
 
-    /**
-     * Update location (JSON – AJAX)
-     */
-    public function update(Request $request, $id)
+    // 6. Update the location
+    public function updatesupplierlocations(Request $request, $id)
     {
-        $location = $this->findLocation($id);
+        $location = SupplierLocation::findOrFail($id);
 
-        $location->update(array_merge(
-            $request->only([
-                'address_line1', 'city', 'postal_code',
-                'latitude', 'longitude', 'is_active'
-            ]),
-            ['updated_by' => Auth::id()]
-        ));
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Location updated successfully',
-            'data' => $location->fresh()
-        ]);
-    }
-
-    /**
-     * Set primary (JSON)
-     */
-    public function setPrimary($id)
-    {
-        DB::transaction(function () use ($id) {
-            $location = $this->findLocation($id);
-
-            SupplierLocation::where('supplier_id', $location->supplier_id)
-                ->update(['is_primary' => false]);
-
-            $location->update([
-                'is_primary' => true,
-                'updated_by' => Auth::id()
-            ]);
-        });
-
-        return response()->json(['success' => true]);
-    }
-
-    /**
-     * Toggle active (JSON)
-     */
-    public function toggleActive($id)
-    {
-        $location = $this->findLocation($id);
-
-        $location->update([
-            'is_active' => !$location->is_active,
-            'updated_by' => Auth::id()
+        $validated = $request->validate([
+            'location_name' => 'required|string|max:255',
+            'address_line1' => 'required|string',
+            'city'          => 'required|string',
         ]);
 
-        return response()->json(['success' => true, 'data' => $location]);
+        $validated['updated_by'] = Auth::id();
+        $validated['is_active'] = $request->has('is_active');
+        $validated['is_primary'] = $request->has('is_primary');
+
+        $location->update($validated);
+
+        return redirect()->route('supplierlocations')->with('success', 'Location updated successfully!');
     }
 
-    /**
-     * Soft delete (JSON)
-     */
-    public function destroy($id)
+    // 7. Delete (Soft Delete) the location
+    public function destroysupplierlocations($id)
     {
-        $location = $this->findLocation($id);
+        $location = SupplierLocation::findOrFail($id);
+        $location->delete();
 
-        $location->update([
-            'status' => 'deleted',
-            'updated_by' => Auth::id()
-        ]);
-
-        // $location->delete();
-
-        return response()->json(['success' => true]);
-    }
-
-    /**
-     * Google address validation (JSON only)
-     */
-    public function validateAddress(Request $request)
-    {
-        // unchanged logic – JSON is correct here
-    }
-
-    /**
-     * Helpers
-     */
-    private function resolveSupplierId(Request $request): int
-    {
-        if (auth()->user()->hasRole('super_admin') && $request->supplier_id) {
-            return (int) $request->supplier_id;
-        }
-
-        return Supplier::where('user_id', auth()->id())->value('id');
-    }
-
-    private function findLocation(int $id): SupplierLocation
-    {
-        return SupplierLocation::where('id', $id)
-            ->whereIn('supplier_id', Supplier::where('user_id', auth()->id())->pluck('id'))
-            ->firstOrFail();
+        return redirect()->route('supplierlocations')->with('success', 'Location deleted successfully!');
     }
 }
