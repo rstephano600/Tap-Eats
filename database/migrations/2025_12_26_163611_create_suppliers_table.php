@@ -30,14 +30,14 @@ public function up()
             $table->timestamp('verified_at')->nullable();
             
             // Contact information
-            $table->string('contact_email', 255);
-            $table->string('contact_phone', 20);
+            $table->string('contact_email', 255)->nullable();
+            $table->string('contact_phone', 20)->nullable();
             $table->string('website', 255)->nullable();
             
             // Operating details
             $table->json('operating_hours')->nullable(); // {monday: {open: "09:00", close: "22:00"}, ...}
             $table->integer('preparation_time')->default(30); // Average time in minutes
-            $table->decimal('delivery_radius', 5, 2)->default(10.00); // in kilometers
+            $table->decimal('delivery_radius', 5, 2)->default(0.00); // in kilometers
             $table->decimal('min_order_amount', 10, 2)->default(0.00);
             $table->decimal('delivery_fee', 10, 2)->default(0.00);
             $table->decimal('free_delivery_above', 10, 2)->nullable();
@@ -46,25 +46,20 @@ public function up()
             $table->decimal('average_rating', 3, 2)->default(0.00);
             $table->integer('total_reviews')->default(0);
             $table->integer('total_orders')->default(0);
-            $table->decimal('acceptance_rate', 5, 2)->default(100.00);
+            $table->decimal('acceptance_rate', 5, 2)->default(0.00);
             $table->decimal('cancellation_rate', 5, 2)->default(0.00);
             
             // Status flags
             $table->boolean('is_active')->default(true);
             $table->boolean('is_featured')->default(false);
-            $table->boolean('is_open_now')->default(false); // Real-time status
+            $table->boolean('is_open_now')->default(false);
             $table->boolean('accepts_orders')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
-            
+            $table->enum('Status', ['Active', 'Inactive', 'Locked', 'Deleted'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index('slug');
-            $table->index(['is_active', 'is_featured']);
-            $table->index('verification_status');
-            $table->index('average_rating');
         });
     }
 

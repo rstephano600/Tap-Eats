@@ -1,262 +1,157 @@
 <div class="border-end bg-darkblue" id="sidebar-wrapper">
-<div class="sidebar-heading text-white fw-bold border-bottom border-secondary p-4 d-flex align-items-center">
-    <img src="{{ asset('images/logo/ejossolution.png') }}" alt="TapEats Logo" class="me-2" style="height: 40px; width: auto; object-fit: contain;">
-    <span>TapEats</span>
-</div>
-    
-    <div class="list-group list-group-flush px-2 mt-3">
-        <small class="text-uppercase text-muted fw-bold mb-2 ps-3" style="font-size: 0.65rem; letter-spacing: 1px;">Main</small>
-        
-        <a href="{{ url('/dashboard') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> Dashboard
-        </a>
-
-        <a href="{{ route('orders.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. orders
-        </a>
-        <a href="{{ route('menu-items.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. menu items
-        </a>
-        <a href="{{ route('menu-item-variants.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. menu items variants
-        </a>
-        <a href="{{ route('menu-item-addons.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. menu items Addons
-        </a>
-        <a href="{{ route('menu-categories.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. MEnu categories
-        </a>
-        <a href="{{ route('supplier.suppliers.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. your Business
-        </a>
-        <a href="{{ route('supplierlocations') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. your Business Location
-        </a>
-        <a href="{{ route('supplier.financial.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. your Financial Informations
-        </a>
-        <a href="{{ route('suppliers.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. Suppliers
-        </a>
-        <a href="{{ route('supplierlocations') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. Suppliers Locations
-        </a>
-        <a href="{{ route('busines-types.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. Business Types
-        </a>
-        <a href="{{ route('service-types.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. Services Types
-        </a>
-
-
-
-
-
-        <!-- <a href="{{ route('roles.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. Roles
-        </a> -->
-        <!-- <a href="{{ route('role-users.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. Users Roles
-        </a> 
-
-        <a href="{{ route('permissions.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. Permissions
-        </a>
-        <a href="{{ route('permission-roles.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. Permissions Roles
-        </a> 
-        <a href="{{ route('user-permissions.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. USers Permissions
-        </a> 
-
-        <br><br>
-        <a href="{{ route('customer.profile') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. Your Profile
-        </a> 
-        <a href="{{ route('customer.addresses.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. Your Address
-        </a> 
-
-
-@permission('delivery-food')
-            <a href="{{ route('users.create') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> Add User
-        </a> 
-@endpermission
-
-        @if(auth()->user()->hasPermission('manage-roles'))
-<a href="{{ route('roles.index') }}" class="list-group-item">
-    <i class="bi bi-person-badge"></i> Roles
-</a>
-@endif
-
-
-
-
-        <a href="{{ route('users.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. Users
-        </a>
-        <a href="{{ route('guest-sessions.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. Guests Users
-        </a>
-        <a href="{{ route('customer-profiles.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> M. Profiles
-        </a>
-
--->
-
-        @if(Auth::check())
-            @php $role = Auth::user()->role; @endphp
-
-            @if(in_array($role, ['super_admin', 'admin']))
-                <small class="text-uppercase text-muted fw-bold mt-4 mb-2 ps-3" style="font-size: 0.65rem; letter-spacing: 1px;">Administration</small>
-                <a href="{{ url('/admin/users') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('admin/users*') ? 'active' : '' }}">
-                    <i class="bi bi-people me-2"></i> Users
-                </a>
-                <a href="{{ url('/admin/suppliers') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('admin/suppliers*') ? 'active' : '' }}">
-                    <i class="bi bi-shop-window me-2"></i> Suppliers
-                </a>
-            @endif
-
-            @if($role === 'supplier')
-                <small class="text-uppercase text-muted fw-bold mt-4 mb-2 ps-3" style="font-size: 0.65rem; letter-spacing: 1px;">Store Management</small>
-                <a href="{{ url('/supplier/menu') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('supplier/menu*') ? 'active' : '' }}">
-                    <i class="bi bi-journal-text me-2"></i> My Menu
-                </a>
-                <a href="{{ url('/supplier/orders') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('supplier/orders*') ? 'active' : '' }}">
-                    <i class="bi bi-bag-plus me-2"></i> Orders Received
-                </a>
-            @endif
-
-            @if($role === 'customer')
-                <small class="text-uppercase text-muted fw-bold mt-4 mb-2 ps-3" style="font-size: 0.65rem; letter-spacing: 1px;">Hungry?</small>
-                <a href="{{ url('/menu') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('menu*') ? 'active' : '' }}">
-                    <i class="bi bi-search me-2"></i> Browse Food
-                </a>
-                <a href="{{ url('/orders') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('orders*') ? 'active' : '' }}">
-                    <i class="bi bi-clock-history me-2"></i> Order History
-                </a>
-            @endif
-        @endif
-    </div>
-</div>
-
-
-
-<!-- 
-
-
-<div class="border-end bg-darkblue" id="sidebar-wrapper">
-
-    {{-- Brand --}}
     <div class="sidebar-heading text-white fw-bold border-bottom border-secondary p-4 d-flex align-items-center">
-        <img src="{{ asset('images/logo/ejossolution.png') }}"
-             alt="TapEats Logo"
-             class="me-2"
-             style="height: 40px; width: auto; object-fit: contain;">
+        <img src="{{ asset('images/logo/ejossolution.png') }}" alt="TapEats Logo" class="me-2" style="height: 40px; width: auto; object-fit: contain;">
         <span>TapEats</span>
     </div>
 
     <div class="list-group list-group-flush px-2 mt-3">
 
-        {{-- ================= MAIN ================= --}}
+        {{-- MAIN --}}
+        <small class="text-uppercase text-muted fw-bold mb-2 ps-3" style="font-size: 0.65rem; letter-spacing: 1px;">Main</small>
 
-
-        @permission('manage-roles')
-        <a href="{{ url('/dashboard') }}"
-           class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2 me-2"></i> Dashboard
+        <a href="{{ url('/dashboard') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard') ? 'active' : '' }}">
+            <i class="bi bi-speedometer2 me-2"></i> Dashboard
         </a>
-        @endpermission
 
-        {{-- ================= ADMIN ================= --}}
-        @permission('manage-roles')
-        <small class="text-uppercase text-muted fw-bold mt-4 ps-3"
-               style="font-size: 0.65rem; letter-spacing: 1px;">
-            Administration
-        </small>
+        @role('super_admin')
+        {{-- SUPPLIER GROUP --}}
+        <small class="text-uppercase text-white-50 fw-bold mt-3 mb-1 ps-3" style="font-size: 0.65rem; letter-spacing: 1.5px;">Super Admin</small>
 
-            @permission('manage-roles')
-            <a href="{{ route('users.index') }}"
-               class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('users*') ? 'active' : '' }}">
-                <i class="bi bi-people me-2"></i> Users
+        <a class="list-group-item list-group-item-action rounded mb-1 d-flex justify-content-between align-items-center sidebar-toggle"
+           data-bs-toggle="collapse" href="#superaAdmin" role="button" aria-expanded="false">
+            <span><i class="bi bi-shop me-2"></i> Super Admin</span>
+            <i class="bi bi-chevron-down small toggle-icon"></i>
+        </a>
+        <div class="collapse" id="superaAdmin">
+            <a href="{{ route('manageSuppliers') }}" class="list-group-item list-group-item-action rounded mb-1 ps-4">
+                <i class="bi bi-info-circle me-2"></i>Manage Suppliers
             </a>
-            @endpermission
-
-            @permission('manage-roles')
-            <a href="{{ route('roles.index') }}"
-               class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('roles*') ? 'active' : '' }}">
+            <a href="{{ route('admin.roles.index') }}" class="list-group-item list-group-item-action rounded mb-1 ps-4">
                 <i class="bi bi-person-badge me-2"></i> Roles
             </a>
-            @endpermission
-
-            @permission('manage-roles')
-            <a href="{{ route('permissions.index') }}"
-               class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('permissions*') ? 'active' : '' }}">
-                <i class="bi bi-shield-lock me-2"></i> Permissions
+            <a href="{{ route('admin.users.index') }}" class="list-group-item list-group-item-action rounded mb-1 ps-4">
+                <i class="bi bi-people me-2"></i> Users
             </a>
-            @endpermission
-
-            @permission('assign_roles')
-            <a href="{{ route('role-users.index') }}"
-               class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('role-users*') ? 'active' : '' }}">
-                <i class="bi bi-people me-2"></i> User Roles
+            <a href="{{ route('Servicetypes') }}" class="list-group-item list-group-item-action rounded mb-1 ps-4">
+                <i class="bi bi-tags me-2"></i> Service Types
             </a>
-            @endpermission
+        </div>
+        @endrole
 
-            @permission('manage-roles')
-            <a href="{{ route('permission-roles.index') }}"
-               class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('permission-roles*') ? 'active' : '' }}">
-                <i class="bi bi-key me-2"></i> Role Permissions
+        {{-- SUPPLIER GROUP --}}
+        <small class="text-uppercase text-white-50 fw-bold mt-3 mb-1 ps-3" style="font-size: 0.65rem; letter-spacing: 1.5px;">Supplier</small>
+
+        <a class="list-group-item list-group-item-action rounded mb-1 d-flex justify-content-between align-items-center sidebar-toggle"
+           data-bs-toggle="collapse" href="#supplierGroup" role="button" aria-expanded="false">
+            <span><i class="bi bi-shop me-2"></i> Supplier</span>
+            <i class="bi bi-chevron-down small toggle-icon"></i>
+        </a>
+        <div class="collapse" id="supplierGroup">
+            <a href="{{ route('suppliersinformations') }}" class="list-group-item list-group-item-action rounded mb-1 ps-4">
+                <i class="bi bi-info-circle me-2"></i> Business Info
             </a>
-            @endpermission
-        @endpermission
+            <a href="{{ route('supplierlocations') }}" class="list-group-item list-group-item-action rounded mb-1 ps-4">
+                <i class="bi bi-geo-alt me-2"></i> Business Location
+            </a>
+            <a href="{{ route('supplier.financial.index') }}" class="list-group-item list-group-item-action rounded mb-1 ps-4">
+                <i class="bi bi-bank me-2"></i> Financial Information
+            </a>
+            <a href="{{ route('supplierlocations') }}" class="list-group-item list-group-item-action rounded mb-1 ps-4">
+                <i class="bi bi-pin-map me-2"></i> Suppliers Locations
+            </a>
+        </div>
 
+        {{-- ADMIN / USERS GROUP --}}
+        <small class="text-uppercase text-white-50 fw-bold mt-3 mb-1 ps-3" style="font-size: 0.65rem; letter-spacing: 1.5px;">Administration</small>
 
-        {{-- ================= SUPPLIER ================= --}}
-        @permission('supplier_access')
-        <small class="text-uppercase text-muted fw-bold mt-4 mb-2 ps-3"
-               style="font-size: 0.65rem; letter-spacing: 1px;">
-            Store Management
-        </small>
-
-        @permission('manage_menu')
-        <a href="{{ url('/supplier/menu') }}"
-           class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('supplier/menu*') ? 'active' : '' }}">
-            <i class="bi bi-journal-text me-2"></i> My Menu
+        <a class="list-group-item list-group-item-action rounded mb-1 d-flex justify-content-between align-items-center sidebar-toggle"
+           data-bs-toggle="collapse" href="#adminGroup" role="button" aria-expanded="false">
+            <span><i class="bi bi-shield-lock me-2"></i> Users & Roles</span>
+            <i class="bi bi-chevron-down small toggle-icon"></i>
         </a>
-        @endpermission
+        <div class="collapse" id="adminGroup">
+            <a href="{{ route('supplieruserinfo') }}" class="list-group-item list-group-item-action rounded mb-1 ps-4">
+                <i class="bi bi-person-workspace me-2"></i> Supplier Users
+            </a>
 
-        @permission('view_supplier_orders')
-        <a href="{{ url('/supplier/orders') }}"
-           class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('supplier/orders*') ? 'active' : '' }}">
-            <i class="bi bi-bag-plus me-2"></i> Orders Received
+        </div>
+
+        {{-- MENU GROUP --}}
+        <small class="text-uppercase text-white-50 fw-bold mt-3 mb-1 ps-3" style="font-size: 0.65rem; letter-spacing: 1.5px;">Menu</small>
+
+        <a class="list-group-item list-group-item-action rounded mb-1 d-flex justify-content-between align-items-center sidebar-toggle"
+           data-bs-toggle="collapse" href="#menuGroup" role="button" aria-expanded="false">
+            <span><i class="bi bi-menu-button-wide me-2"></i> Menu Management</span>
+            <i class="bi bi-chevron-down small toggle-icon"></i>
         </a>
-        @endpermission
-        @endpermission
+        <div class="collapse" id="menuGroup">
+            <a href="{{ route('menu-categories.index') }}" class="list-group-item list-group-item-action rounded mb-1 ps-4">
+                <i class="bi bi-grid me-2"></i> Categories
+            </a>
+            <a href="{{ route('menuItemsInformations') }}" class="list-group-item list-group-item-action rounded mb-1 ps-4">
+                <i class="bi bi-egg-fried me-2"></i> Menu Items
+            </a>
+            <a href="{{ route('menu-item-variants.index') }}" class="list-group-item list-group-item-action rounded mb-1 ps-4">
+                <i class="bi bi-layers me-2"></i> Item Variants
+            </a>
+            <a href="{{ route('menu-item-addons.index') }}" class="list-group-item list-group-item-action rounded mb-1 ps-4">
+                <i class="bi bi-plus-square me-2"></i> Item Addons
+            </a>
+        </div>
 
+        {{-- ORDERS --}}
+        <small class="text-uppercase text-white-50 fw-bold mt-3 mb-1 ps-3" style="font-size: 0.65rem; letter-spacing: 1.5px;">Orders</small>
 
-        {{-- ================= CUSTOMER ================= --}}
-        @permission('customer_access')
-        <small class="text-uppercase text-muted fw-bold mt-4 mb-2 ps-3"
-               style="font-size: 0.65rem; letter-spacing: 1px;">
-            Hungry?
-        </small>
-
-        @permission('browse_menu')
-        <a href="{{ url('/menu') }}"
-           class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('menu*') ? 'active' : '' }}">
-            <i class="bi bi-search me-2"></i> Browse Food
+        <a href="{{ route('ordersinformations') }}" class="list-group-item list-group-item-action rounded mb-1">
+            <i class="bi bi-bag-check me-2"></i> Orders
         </a>
-        @endpermission
-
-        @permission('view_orders')
-        <a href="{{ url('/orders') }}"
-           class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('orders*') ? 'active' : '' }}">
-            <i class="bi bi-clock-history me-2"></i> Order History
+        <a href="{{ route('completedOrders') }}" class="list-group-item list-group-item-action rounded mb-1">
+            <i class="bi bi-bag-check me-2"></i> Completed Orders
         </a>
-        @endpermission
-        @endpermission
+        <a href="{{ route('cancelledOrders') }}" class="list-group-item list-group-item-action rounded mb-1">
+            <i class="bi bi-bag-check me-2"></i> Cancelled Orders
+        </a>
+        <a href="{{ route('ordersSummary') }}" class="list-group-item list-group-item-action rounded mb-1">
+            <i class="bi bi-bag-check me-2"></i> Orders Samaary
+        </a>
+
+        {{-- PROFILE --}}
+        <small class="text-uppercase text-white-50 fw-bold mt-3 mb-1 ps-3" style="font-size: 0.65rem; letter-spacing: 1.5px;">Account</small>
+
+        <a href="{{ route('customer.profile') }}" class="list-group-item list-group-item-action rounded mb-1">
+            <i class="bi bi-person-circle me-2"></i> My Profile
+        </a>
 
     </div>
-</div> -->
+</div>
+
+<style>
+    .sidebar-toggle {
+        cursor: pointer;
+    }
+    .sidebar-toggle .toggle-icon {
+        transition: transform 0.25s ease;
+    }
+    .sidebar-toggle[aria-expanded="true"] .toggle-icon {
+        transform: rotate(180deg);
+    }
+    #sidebar-wrapper .list-group-item {
+        background: transparent;
+        color: rgba(255, 255, 255, 0.75);
+        border: none;
+        font-size: 0.875rem;
+    }
+    #sidebar-wrapper .list-group-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+    }
+    #sidebar-wrapper .list-group-item.active {
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        font-weight: 600;
+    }
+    #sidebar-wrapper .collapse .list-group-item {
+        font-size: 0.82rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+</style>

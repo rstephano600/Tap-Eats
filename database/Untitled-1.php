@@ -39,6 +39,49 @@ return new class extends Migration
     }
 };
 
+
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->string('slug')->unique()->nullable();
+            $table->string('descriptions', 200)->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
+
+        });
+
+        Schema::create('permissions', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->string('descriptions', 500)->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
+            $table->timestamps();
+        });
+
+        Schema::create('role_users', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('role_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
+            $table->timestamps();
+        });
+
+        Schema::create('permission_roles', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('permission_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('role_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
+            $table->timestamps();
+        });
+
+
 // ============================================
 // 2. GUEST SESSIONS - For non-logged-in users
 // ============================================

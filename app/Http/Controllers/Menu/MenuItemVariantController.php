@@ -8,7 +8,7 @@ use App\Models\MenuItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class MenuItemVariantController extends Controller
+class MenuItemVariantController extends BaseController
 {
     /**
      * Display a listing of variants (optionally per menu item).

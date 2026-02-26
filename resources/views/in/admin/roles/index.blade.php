@@ -3,77 +3,87 @@
 @section('title', 'Roles Management')
 
 @section('content')
-<div class="row">
-    <div class="col-12">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                <h5 class="mb-0 fw-bold text-darkblue"><i class="bi bi-shield-lock me-2"></i> Roles</h5>
-                <a href="{{ route('roles.create') }}" class="btn btn-accent shadow-sm">
-                    <i class="bi bi-plus-lg me-1"></i> New Role
-                </a>
-            </div>
-            
-            <div class="card-body">
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="bi bi-check-circle me-2"></i> {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-shield-lock"></i> Roles Management</h2>
+        <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New Role
+        </a>
+    </div>
 
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Role Name</th>
+                            <th>Users Count</th>
+                            <th>Permissions Count</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($roles as $role)
                             <tr>
-                                <th class="ps-3">Name</th>
-                                <th>Slug</th>
-                                <th>Status</th>
-                                <th class="text-end pe-3">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($roles as $role)
-                            <tr>
-                                <td class="ps-3 fw-bold">{{ $role->name }}</td>
-                                <td><code class="text-primary">{{ $role->slug }}</code></td>
                                 <td>
-                                    @php
-                                        $badgeClass = match($role->status) {
-                                            'active' => 'success',
-                                            'inactive' => 'secondary',
-                                            'locked' => 'warning',
-                                            'deleted' => 'danger',
-                                            default => 'info'
-                                        };
-                                    @endphp
-                                    <span class="badge rounded-pill bg-{{ $badgeClass }} px-3">
-                                        {{ ucfirst($role->status) }}
-                                    </span>
+                                    <strong>{{ ucwords(str_replace('_', ' ', $role->name)) }}</strong>
+                                    @if($role->name === 'super_admin')
+                                        <span class="badge bg-danger ms-2">System Role</span>
+                                    @endif
                                 </td>
-                                <td class="text-end pe-3">
-                                    <div class="btn-group">
-                                        <a href="{{ route('roles.edit', $role) }}" class="btn btn-sm btn-outline-primary" title="Edit">
+                                <td>
+                                    <span class="badge bg-info">{{ $role->users_count }} users</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">{{ $role->permissions->count() }} permissions</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ route('admin.roles.show', $role) }}" 
+                                           class="btn btn-sm btn-info" title="View">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="{{ route('admin.roles.edit', $role) }}" 
+                                           class="btn btn-sm btn-warning" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <form method="POST" action="{{ route('roles.destroy', $role) }}" class="d-inline">
-                                            @csrf @method('DELETE')
-                                            <button class="btn btn-sm btn-outline-danger" 
-                                                    onclick="return confirm('Are you sure you want to delete this role?')"
-                                                    title="Delete">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
+                                        @if($role->name !== 'super_admin')
+                                            <form action="{{ route('admin.roles.destroy', $role) }}" 
+                                                  method="POST" 
+                                                  onsubmit="return confirm('Are you sure you want to delete this role?');"
+                                                  class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="mt-4 px-3">
-                    {{ $roles->links() }}
-                </div>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No roles found</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

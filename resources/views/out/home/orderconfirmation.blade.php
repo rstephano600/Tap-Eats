@@ -234,7 +234,7 @@
                     <p class="text-muted small mb-1">{{ Str::limit($item->item_description, 60) }}</p>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="text-muted">Qty: {{ $item->quantity }}</span>
-                        <span class="fw-bold text-primary">${{ number_format($item->subtotal, 2) }}</span>
+                        <span class="fw-bold text-primary">{{ number_format($item->subtotal, 2) }} Tsh</span>
                     </div>
                 </div>
             </div>
@@ -245,23 +245,23 @@
         <div class="border-top pt-3">
             <div class="info-row">
                 <span>Subtotal:</span>
-                <span>${{ number_format($order->subtotal, 2) }}</span>
+                <span>{{ number_format($order->subtotal, 2) }} Tsh</span>
             </div>
             <div class="info-row">
                 <span>Delivery Fee:</span>
-                <span>${{ number_format($order->delivery_fee, 2) }}</span>
+                <span>{{ number_format($order->delivery_fee, 2) }} Tsh</span>
             </div>
             <div class="info-row">
                 <span>Service Fee:</span>
-                <span>${{ number_format($order->service_fee, 2) }}</span>
+                <span>{{ number_format($order->service_fee, 2) }} Tsh</span>
             </div>
             <div class="info-row">
                 <span>Tax:</span>
-                <span>${{ number_format($order->tax_amount, 2) }}</span>
+                <span>{{ number_format($order->tax_amount, 2) }} Tsh</span>
             </div>
             <div class="info-row fw-bold fs-5 text-primary">
                 <span>Total:</span>
-                <span>${{ number_format($order->total_amount, 2) }}</span>
+                <span>{{ number_format($order->total_amount, 2) }} Tsh</span>
             </div>
         </div>
 
@@ -329,7 +329,7 @@
         <a href="{{ route('home') }}" class="btn btn-primary btn-lg">
             <i class="bi bi-house"></i> Back to Home
         </a>
-        <a href="{{ route('register') }}" class="btn btn-outline-primary btn-lg">
+        <a href="{{ route('showRegisterForm') }}" class="btn btn-outline-primary btn-lg">
             <i class="bi bi-person-plus"></i> Create Account
         </a>
         @endauth

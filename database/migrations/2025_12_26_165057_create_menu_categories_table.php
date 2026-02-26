@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('menu_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
+            $table->foreignId('supplier_id')->constrained()->onDelete('cascade')->nullable();
             $table->string('category_name', 100);
             $table->text('description')->nullable();
+            $table->string('image')->nullable();
             $table->integer('display_order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
@@ -23,8 +24,6 @@ return new class extends Migration
             $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
             $table->timestamps();
             $table->softDeletes();
-
-            $table->index(['supplier_id', 'display_order']);
         });
     }
 

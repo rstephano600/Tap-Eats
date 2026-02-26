@@ -8,7 +8,7 @@ use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class MenuCategoryController extends Controller
+class MenuCategoryController extends BaseController
 {
     /**
      * Display a listing of the resource.

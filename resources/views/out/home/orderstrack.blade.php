@@ -242,7 +242,7 @@
 
                         <div class="mt-3 pt-3 border-top">
                             <small class="text-muted">
-                                <i class="bi bi-credit-card"></i> 
+                                <i class="bi bi-credit-card"></i>
                                 Payment: {{ ucfirst(str_replace('_', ' ', $order->payment_method)) }}
                                 ({{ ucfirst($order->payment_status) }})
                             </small>

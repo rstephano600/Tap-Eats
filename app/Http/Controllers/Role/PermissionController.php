@@ -3,86 +3,52 @@
 namespace App\Http\Controllers\Role;
 
 use App\Http\Controllers\Controller;
-
-use App\Models\Permission;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
 
 class PermissionController extends Controller
 {
     public function index()
     {
-        $permissions = Permission::where('status', '!=', 'deleted')
-            ->latest()
-            ->paginate(10);
-
-        return view('in.permissions.index', compact('permissions'));
+        $permissions = Permission::withCount('roles')
+            ->orderBy('name')
+            ->paginate(50);
+        
+        return view('in.admin.permissions.index', compact('permissions'));
     }
 
     public function create()
     {
-        return view('in.permissions.create');
+        return view('in.admin.permissions.create');
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255|unique:permissions,name',
-            'descriptions' => 'nullable|string|max:500',
+            'description' => 'nullable|string|max:500',
         ]);
 
         Permission::create([
-            'name'        => $request->name,
-            'descriptions'=> $request->descriptions,
-            'created_by'  => Auth::id(),
-            'status'      => 'active',
+            'name' => Str::slug($validated['name'], '_'),
+            'guard_name' => 'web',
         ]);
 
-        return redirect()
-            ->route('permissions.index')
-            ->with('success', 'Permission created successfully.');
-    }
-
-    public function show(Permission $permission)
-    {
-        return view('in.permissions.show', compact('permission'));
-    }
-
-    public function edit(Permission $permission)
-    {
-        return view('in.permissions.edit', compact('permission'));
-    }
-
-    public function update(Request $request, Permission $permission)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:permissions,name,' . $permission->id,
-            'descriptions' => 'nullable|string|max:500',
-            'status' => 'required|in:active,inactive,locked',
-        ]);
-
-        $permission->update([
-            'name'        => $request->name,
-            'descriptions'=> $request->descriptions,
-            'status'      => $request->status,
-            'updated_by'  => Auth::id(),
-        ]);
-
-        return redirect()
-            ->route('permissions.index')
-            ->with('success', 'Permission updated successfully.');
+        return redirect()->route('admin.permissions.index')
+            ->with('success', 'Permission created successfully!');
     }
 
     public function destroy(Permission $permission)
     {
-        $permission->update([
-            'status' => 'deleted',
-            'updated_by' => Auth::id(),
-        ]);
+        // Prevent deleting if permission is assigned to roles
+        if ($permission->roles()->count() > 0) {
+            return back()->with('error', 'Cannot delete permission assigned to roles. Please remove from roles first.');
+        }
 
-        return redirect()
-            ->route('permissions.index')
-            ->with('success', 'Permission deleted successfully.');
+        $permission->delete();
+
+        return redirect()->route('admin.permissions.index')
+            ->with('success', 'Permission deleted successfully!');
     }
 }

@@ -18,7 +18,7 @@ class OrderController extends Controller
     /**
      * Display a listing of orders
      */
-    public function index(Request $request)
+    public function ordersinformations(Request $request)
     {
         $query = Order::with(['customer', 'supplier', 'orderItems.menuItem']);
 
@@ -55,25 +55,25 @@ class OrderController extends Controller
 
         $orders = $query->paginate($request->get('per_page', 15));
 
-        return view('in.order.orders.index', compact('orders'));
+        return view('in.order.orders.ordersinformations', compact('orders'));
     }
 
     /**
      * Show the form for creating a new order
      */
-    public function create()
+    public function createordersinformations()
     {
         $suppliers = Supplier::all();
         $serviceTypes = DB::table('service_types')->get(); // Adjust based on your table
         $menuItems = MenuItem::where('is_active', true)->where('is_available', true)->get();
 
-        return view('in.order.orders.create', compact('suppliers', 'serviceTypes', 'menuItems'));
+        return view('in.order.orders.createordersinformations', compact('suppliers', 'serviceTypes', 'menuItems'));
     }
 
     /**
      * Store a newly created order
      */
-    public function store(Request $request)
+    public function storeordersinformations(Request $request)
     {
         $validated = $request->validate([
             'supplier_id' => 'required|exists:suppliers,id',
@@ -148,7 +148,7 @@ class OrderController extends Controller
 
             DB::commit();
 
-            return redirect()->route('orders.show', $order->id)
+            return redirect()->route('ordersinformations', $order->id)
                              ->with('success', 'Order created successfully!');
 
         } catch (\Exception $e) {
@@ -160,7 +160,7 @@ class OrderController extends Controller
     /**
      * Display the specified order
      */
-    public function show($id)
+    public function showordersinformations($id)
     {
         $order = Order::with([
             'orderItems.menuItem',
@@ -169,28 +169,28 @@ class OrderController extends Controller
             'deliveryAddress'
         ])->findOrFail($id);
 
-        return view('in.order.orders.show', compact('order'));
+        return view('in.order.orders.showordersinformations', compact('order'));
     }
 
     /**
      * Show the form for editing (Note: Usually limited to status or basic info)
      */
-    public function edit($id)
+    public function editordersinformations($id)
     {
         $order = Order::findOrFail($id);
         
         if (!in_array($order->order_status, ['pending', 'accepted'])) {
-            return redirect()->route('orders.show', $id)
+            return redirect()->route('showordersinformations', $id)
                              ->with('error', 'This order cannot be edited anymore.');
         }
 
-        return view('in.order.orders.edit', compact('order'));
+        return view('in.order.orders.editordersinformations', compact('order'));
     }
 
     /**
      * Update the specified order
      */
-    public function update(Request $request, $id)
+    public function updateordersinformations(Request $request, $id)
     {
         $order = Order::findOrFail($id);
 
@@ -202,7 +202,7 @@ class OrderController extends Controller
 
         try {
             $order->update(array_merge($validated, ['updated_by' => Auth::id()]));
-            return redirect()->route('orders.show', $id)->with('success', 'Order updated.');
+            return redirect()->route('showordersinformations', $id)->with('success', 'Order updated.');
         } catch (\Exception $e) {
             return back()->with('error', 'Update failed.');
         }
@@ -241,7 +241,7 @@ class OrderController extends Controller
     /**
      * Soft delete/Cancel order
      */
-    public function destroy($id)
+    public function destroyordersinformations($id)
     {
         $order = Order::findOrFail($id);
 
@@ -255,7 +255,7 @@ class OrderController extends Controller
             $order->delete();
             DB::commit();
 
-            return redirect()->route('orders.index')->with('success', 'Order deleted.');
+            return redirect()->route('ordersinformations')->with('success', 'Order deleted.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Deletion failed.');

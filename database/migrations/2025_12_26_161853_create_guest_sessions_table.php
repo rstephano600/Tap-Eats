@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('guest_sessions', function (Blueprint $table) {
             $table->id();
+            $table->uuid('session_id')->nullable();
+            $table->string('email', 255)->nullable();
+            $table->string('phone', 50)->nullable();
+            $table->string('name', 255)->nullable();
             $table->string('session_token', 64)->unique();
             $table->string('device_id', 100)->nullable();
             $table->string('ip_address', 45);
@@ -27,13 +31,9 @@ return new class extends Migration
             $table->timestamp('expires_at');
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
+            $table->enum('Status', ['Active', 'Inactive', 'Locked', 'Deleted'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
-
-            $table->index('session_token');
-            $table->index(['latitude', 'longitude']);
-            $table->index('last_activity_at');
         });
     }
 

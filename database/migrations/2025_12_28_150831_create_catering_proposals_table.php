@@ -9,49 +9,52 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-public function up()
+    public function up(): void
     {
         Schema::create('catering_proposals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('catering_request_id')->constrained()->onDelete('cascade');
             $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
-            $table->string('proposal_number', 50)->unique();
-            
+            $table->string('proposal_number', 50)->unique()->nullable(); // 修复这里：->nullable()
+
             // Proposal details
             $table->json('menu_items')->nullable(); // Proposed menu with items
             $table->decimal('price_per_person', 10, 2)->nullable();
-            $table->decimal('total_price', 10, 2);
-            $table->decimal('setup_fee', 10, 2)->default(0.00);
-            $table->decimal('service_fee', 10, 2)->default(0.00);
-            $table->text('inclusions')->nullable(); // What's included
-            $table->text('exclusions')->nullable(); // What's not included
-            $table->text('terms_and_conditions')->nullable();
+            $table->decimal('total_price', 12, 2)->nullable();
+            $table->integer('number_of_people')->nullable();
+            $table->date('event_date')->nullable();
+            $table->string('venue')->nullable();
             
             // Additional services
-            $table->boolean('includes_setup')->default(false);
-            $table->boolean('includes_service_staff')->default(false);
-            $table->boolean('includes_equipment')->default(false);
-            $table->boolean('includes_decoration')->default(false);
-            $table->integer('staff_count')->nullable();
+            $table->json('additional_services')->nullable(); // e.g., decor, equipment, staff
+            $table->decimal('additional_services_cost', 10, 2)->default(0);
             
-            // Validity
-            $table->date('valid_until');
-            $table->text('notes')->nullable();
+            // Payment terms
+            $table->decimal('deposit_required', 10, 2)->nullable();
+            $table->string('payment_terms')->nullable();
             
             // Status
-            $table->enum('catering_proposals_status', ['submitted', 'viewed', 'accepted', 'rejected', 'expired'])->default('submitted');
-            $table->timestamp('submitted_at');
-            $table->timestamp('viewed_at')->nullable();
-            $table->timestamp('accepted_at')->nullable();
-            $table->text('rejection_reason')->nullable();
+            $table->enum('proposal_status', ['draft', 'submitted', 'under_review', 'accepted', 'rejected', 'revised'])
+                  ->default('draft');
+            
+            // Communication
+            $table->text('special_instructions')->nullable();
+            $table->text('caterer_notes')->nullable();
+            
+            // Timestamps
+            $table->timestamp('submitted_at')->nullable();
+            $table->timestamp('reviewed_at')->nullable();
+            $table->timestamp('expires_at')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
+            $table->enum('Status', ['Active', 'Inactive', 'Locked', 'Deleted'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
-
-            $table->index(['catering_request_id', 'status']);
-            $table->index('supplier_id');
+            
+            // Indexes
+            $table->index('proposal_number');
+            $table->index('status');
+            $table->index(['catering_request_id', 'supplier_id']);
         });
     }
 

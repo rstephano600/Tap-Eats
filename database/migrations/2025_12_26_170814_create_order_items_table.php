@@ -27,12 +27,9 @@ return new class extends Migration
             $table->decimal('subtotal', 10, 2); // (unit_price + addons) * quantity
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
+            $table->enum('Status', ['Active', 'Inactive', 'Locked', 'Deleted'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
-
-            $table->index('order_id');
-            $table->index('menu_item_id');
         });
     }
     /**

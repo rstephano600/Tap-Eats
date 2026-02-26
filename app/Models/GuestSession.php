@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class GuestSession extends Model
 {
-    use SoftDeletes;
 
     protected $fillable = [
         'session_token',
+        'session_id',
+        'email',
+        'phone',
+        'name',
         'device_id',
         'ip_address',
         'user_agent',

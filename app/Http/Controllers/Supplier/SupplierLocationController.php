@@ -20,7 +20,17 @@ class SupplierLocationController extends Controller
     // 2. Show the form to create a new location
     public function createsupplierlocations()
     {
-        $suppliers = Supplier::all(); // Needed to select which supplier owns this location
+       
+    $query = Supplier::with('businessType');
+
+    if (!auth()->user()->hasRole('super_admin')) {
+        $query->where('user_id', auth()->id());
+    }
+    $suppliers = $query
+        ->whereNull('deleted_at')
+        ->latest()
+        ->get();
+
         return view('in.suppliers.locations.create', compact('suppliers'));
     }
 

@@ -54,14 +54,9 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
+            $table->enum('Status', ['Active', 'Inactive', 'Locked', 'Deleted'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
-
-            $table->index(['supplier_id', 'is_available']);
-            $table->index('slug');
-            $table->index(['is_featured', 'is_popular']);
-            $table->index('order_count');
         });
     }
 

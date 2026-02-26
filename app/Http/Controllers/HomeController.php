@@ -230,9 +230,9 @@ public function checkoutindex(Request $request)
     $orderSummary = [];
     foreach ($cartBySupplier as $supplierId => $items) {
         $subtotal = collect($items)->sum(fn($item) => $item['price'] * $item['quantity']);
-        $deliveryFee = 5.00;
-        $serviceFee = 2.50;
-        $tax = $subtotal * 0.10;
+        $deliveryFee = 0.00;
+        $serviceFee = 0.00;
+        $tax = $subtotal * 0.00;
         $total = $subtotal + $deliveryFee + $serviceFee + $tax;
         
         $orderSummary[$supplierId] = [
@@ -338,14 +338,18 @@ public function checkoutprocess(Request $request)
         
         if (!$customerId) {
             $guestSession = GuestSession::create([
-                'session_id' => (string) Str::uuid(),
+                'session_id' => Str::uuid(), // Already returns a UUID string
                 'email' => $validated['customer_email'],
                 'phone' => $validated['customer_phone'],
                 'name' => $validated['customer_name'],
+                // Add other required fields
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'last_activity_at' => now(),
                 'expires_at' => now()->addDays(30),
             ]);
+    
             $guestSessionId = $guestSession->id;
-                // Store in session for future order access
             session(['guest_session_id' => $guestSessionId]);
         }
 
@@ -358,9 +362,9 @@ public function checkoutprocess(Request $request)
             });
 
             // Get fees from config or database (hardcoded for now)
-            $taxRate = 0.10; // 10% - should come from settings
-            $deliveryFee = $isDelivery ? 5.00 : 0.00;
-            $serviceFee = 2.50;
+            $taxRate = 0.0; // 10% - should come from settings
+            $deliveryFee = $isDelivery ? 1.00 : 0.00;
+            $serviceFee = 0.00;
             
             $taxAmount = ($subtotal + $deliveryFee + $serviceFee) * $taxRate;
             $totalAmount = $subtotal + $deliveryFee + $serviceFee + $taxAmount;
@@ -381,7 +385,7 @@ public function checkoutprocess(Request $request)
                 'supplier_id' => $supplierId,
                 'service_type_id' => $validated['service_type_id'],
                 'order_type' => $validated['order_type'],
-                'scheduled_at' => $validated['scheduled_at'] ?? null,
+                'scheduled_at' => $validated['scheduled_at'] ?? now(),
                 'order_status' => 'pending',
                 'payment_method' => $validated['payment_method'],
                 'payment_status' => 'pending',
@@ -516,7 +520,7 @@ public function orderstrack($orderNumber)
     $statusTimeline = $this->getOrderStatusTimeline($order);
 
     return view('out.home.orderstrack', compact('order', 'statusTimeline'));
-}
+    }
 
 /**
  * Helper: Get order status timeline
@@ -535,7 +539,7 @@ private function getOrderStatusTimeline($order)
             'status' => 'confirmed',
             'label' => 'Confirmed by Restaurant',
             'icon' => 'bi-check-circle',
-            'completed' => in_array($order->order_status, ['confirmed', 'preparing', 'ready', 'dispatched', 'delivered']),
+            'completed' => in_array($order->order_status, ['confirmed', 'accepted', 'preparing', 'ready', 'dispatched', 'delivered']),
             'time' => $order->confirmed_at ?? null,
         ],
         [
@@ -575,20 +579,20 @@ private function getOrderStatusTimeline($order)
             'status' => 'ready',
             'label' => 'Ready for Pickup',
             'icon' => 'bi-box-seam',
-            'completed' => in_array($order->order_status, ['ready', 'completed']),
+            'completed' => in_array($order->order_status, ['ready', 'completed', 'dispatched', 'delivered']),
             'time' => $order->ready_at ?? null,
         ];
         $timeline[] = [
-            'status' => 'completed',
+            'status' => 'delivered',
             'label' => 'Picked Up',
             'icon' => 'bi-check-circle-fill',
-            'completed' => $order->order_status === 'completed',
+            'completed' => $order->order_status === 'delivered',
             'time' => $order->completed_at ?? null,
         ];
     }
 
     return $timeline;
-}
+   }
 
     /**
      * Show order confirmation page
@@ -632,7 +636,7 @@ private function getOrderStatusTimeline($order)
     private function calculateDeliveryFee($distance)
     {
         // Base delivery fee
-        $baseFee = 5.00;
+        $baseFee = 1.00;
         
         // Additional fee per km (after first 5km)
         $perKmFee = 1.00;
@@ -641,7 +645,7 @@ private function getOrderStatusTimeline($order)
             return $baseFee;
         }
         
-        $additionalDistance = $distance - 5;
+        $additionalDistance = $distance - 0;
         return $baseFee + ($additionalDistance * $perKmFee);
     }
 
@@ -857,6 +861,7 @@ public function faq()
 /**
  * Display daily meal items grouped by categories with random ordering
  */
+
 public function dailymenuitems(Request $request)
 {
     // Get search query

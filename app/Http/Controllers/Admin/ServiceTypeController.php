@@ -9,19 +9,19 @@ use Illuminate\Support\Facades\Auth;
 
 class ServiceTypeController extends Controller
 {
-    public function index()
+    public function Servicetypes()
     {
-        $serviceTypes = ServiceType::orderBy('display_order')->paginate(10);
+        $serviceTypes = ServiceType::orderBy('display_order')->paginate(30);
 
-        return view('in.admin.service_types.index', compact('serviceTypes'));
+        return view('in.admin.servicetypes.Servicetypes', compact('serviceTypes'));
     }
 
-    public function create()
+    public function createServicetypes()
     {
-        return view('in.admin.service_types.create');
+        return view('in.admin.servicetypes.createServicetypes');
     }
 
-    public function store(Request $request)
+    public function storeServicetypes(Request $request)
     {
         $data = $request->validate([
             'name'          => 'required|string|max:100',
@@ -40,21 +40,21 @@ class ServiceTypeController extends Controller
         ServiceType::create($data);
 
         return redirect()
-            ->route('service-types.index')
+            ->route('Servicetypes')
             ->with('success', 'Service Type created successfully.');
     }
 
-    public function show(ServiceType $serviceType)
+    public function showServicetypes(ServiceType $serviceType)
     {
-        return view('in.admin.service_types.show', compact('serviceType'));
+        return view('in.admin.servicetypes.showServicetypes', compact('serviceType'));
     }
 
-    public function edit(ServiceType $serviceType)
+    public function editServicetypes(ServiceType $serviceType)
     {
-        return view('in.admin.service_types.edit', compact('serviceType'));
+        return view('in.admin.servicetypes.editServicetypes', compact('serviceType'));
     }
 
-    public function update(Request $request, ServiceType $serviceType)
+    public function updateServicetypes(Request $request, ServiceType $serviceType)
     {
         $data = $request->validate([
             'name'          => 'required|string|max:100',
@@ -73,20 +73,19 @@ class ServiceTypeController extends Controller
         $serviceType->update($data);
 
         return redirect()
-            ->route('service-types.index')
+            ->route('Servicetypes')
             ->with('success', 'Service Type updated successfully.');
     }
 
-    public function destroy(ServiceType $serviceType)
+    public function destroyServicetypes(ServiceType $serviceType)
     {
         $serviceType->update([
             'status' => 'deleted',
             'updated_by' => Auth::id(),
         ]);
 
-
         return redirect()
-            ->route('service-types.index')
+            ->route('Servicetypes')
             ->with('success', 'Service Type deleted.');
     }
 }

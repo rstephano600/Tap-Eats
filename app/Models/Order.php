@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'order_number',
@@ -28,10 +28,14 @@ class Order extends Model
         'delivery_phone',
         'delivery_contact_name',
         'scheduled_at',
+        'confirmed_at',
         'accepted_at',
         'prepared_at',
+        'preparing_at',
+        'ready_at',
         'dispatched_at',
         'delivered_at',
+        'completed_at',
         'cancelled_at',
         'estimated_delivery_time',
         'subtotal',
@@ -56,11 +60,15 @@ class Order extends Model
     ];
 
     protected $casts = [
+        'confirmed_at' => 'datetime',
         'scheduled_at' => 'datetime',
         'accepted_at' => 'datetime',
         'prepared_at' => 'datetime',
+        'preparing_at' => 'datetime',
+        'ready_at' => 'datetime',
         'dispatched_at' => 'datetime',
         'delivered_at' => 'datetime',
+        'completed_at' => 'datetime',
         'cancelled_at' => 'datetime',
         'delivery_time' => 'datetime',
         'subtotal' => 'decimal:2',

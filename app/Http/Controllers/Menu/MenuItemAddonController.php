@@ -9,7 +9,7 @@ use App\Models\MenuItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class MenuItemAddonController extends Controller
+class MenuItemAddonController extends BaseController
 {
     /**
      * Display a listing of add-ons (optionally filtered by menu item).

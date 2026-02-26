@@ -96,3 +96,26 @@ VALUES
 (1, 11, 'Ice Cream', 'ice-cream', 'Vanilla ice cream scoop', 3000, NULL, NULL, NULL, NOW(), NOW()),
 (1, 11, 'Fruit Salad', 'fruit-salad', 'Mixed fresh fruits', 3500, NULL, NULL, NULL, NOW(), NOW()),
 (1, 11, 'Cake Slice', 'cake-slice', 'Slice of sponge cake', 4000, NULL, NULL, NULL, NOW(), NOW());
+
+
+-- tar 09/02/2026
+
+-- Drop old session_token column and its index
+
+-- Drop the old index
+DROP INDEX guest_sessions_session_token_index ON guest_sessions;
+
+-- Add new UUID session_id column
+ALTER TABLE guest_sessions 
+ADD COLUMN session_id CHAR(36) NOT NULL AFTER id;
+
+-- Add guest info columns
+ALTER TABLE guest_sessions 
+ADD COLUMN email VARCHAR(255) NULL AFTER session_id,
+ADD COLUMN phone VARCHAR(50) NULL AFTER email,
+ADD COLUMN name VARCHAR(255) NULL AFTER phone;
+
+-- Make session_id unique and add index
+ALTER TABLE guest_sessions 
+ADD UNIQUE INDEX guest_sessions_session_id_unique (session_id),
+ADD INDEX guest_sessions_session_id_index (session_id);

@@ -528,9 +528,9 @@
 
 <script>
     // Configuration
-    const DELIVERY_FEE = {{ $deliveryFee ?? 5.00 }};
-    const SERVICE_FEE = {{ $serviceFee ?? 2.50 }};
-    const TAX_RATE = {{ $taxRate ?? 0.10 }}; // 10%
+    const DELIVERY_FEE = {{ $deliveryFee ?? 0.00 }};
+    const SERVICE_FEE = {{ $serviceFee ?? 0.00 }};
+    const TAX_RATE = {{ $taxRate ?? 0.00 }}; // 10%
 
     // Load cart from localStorage
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -563,7 +563,7 @@ function renderOrderSummary() {
                         <h6 class="mb-1 small">${item.name}</h6>
                         <p class="text-muted mb-0" style="font-size: 0.75rem;">Qty: ${item.quantity}</p>
                     </div>
-                    <div class="text-primary fw-bold ms-2">$${(item.price * item.quantity).toFixed(2)}</div>
+                    <div class="text-primary fw-bold ms-2">${(item.price * item.quantity).toFixed(2)} Tsh</div>
                 </div>
             </div>
         `).join('');
@@ -588,7 +588,7 @@ function renderOrderSummary() {
                                  style="width: 40px; height: 40px; object-fit: cover;" alt="${item.name}">
                             <div class="flex-fill">
                                 <div class="small fw-semibold">${item.name}</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">Qty: ${item.quantity} × $${item.price.toFixed(2)} Tsh</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Qty: ${item.quantity} × ${item.price.toFixed(2)} Tsh</div>
                             </div>
                         </div>
                         <div class="text-primary fw-bold ms-2">${(item.price * item.quantity).toFixed(2)} Tsh</div>

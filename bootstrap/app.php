@@ -13,8 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-        'permission' => \App\Http\Middleware\CheckPermission::class,
-        'web' =>\App\Http\Middleware\TrackGuestSession::class,
+        'web' =>\App\Http\Middleware\TrackGuestSession::class,    'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+    'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+    'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+    'supplier.access' => \App\Http\Middleware\CheckSupplierAccess::class,
+
           ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

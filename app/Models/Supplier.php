@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class Supplier extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'user_id',
@@ -49,6 +49,8 @@ class Supplier extends Model
         'is_featured',
         'is_open_now',
         'accepts_orders',
+        'Status',
+        'deleted_at',
     ];
 
     protected $casts = [
@@ -67,7 +69,11 @@ class Supplier extends Model
         'is_featured' => 'boolean',
         'is_open_now' => 'boolean',
         'accepts_orders' => 'boolean',
-    ];
+    'created_at' => 'datetime',
+    'updated_at' => 'datetime',
+    'verified_at' => 'datetime', 
+    'deleted_at' => 'datetime', 
+];
 
     // Relationships
     public function user()
@@ -265,5 +271,46 @@ public function businessType()
         }
 
         return $this->delivery_fee;
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'supplier_user')
+            ->withPivot(['role_id', 'is_primary', 'is_active', 'joined_at', 'invited_by'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Get active staff members for this supplier
+     */
+    public function activeStaff()
+    {
+        return $this->users()->wherePivot('is_active', true);
+    }
+
+    /**
+     * Get staff members by role
+     */
+    public function staffByRole($roleId)
+    {
+        return $this->activeStaff()->wherePivot('role_id', $roleId);
+    }
+
+    /**
+     * Get admins for this supplier
+     */
+    public function admins()
+    {
+        $adminRole = \Spatie\Permission\Models\Role::where('name', 'admin')->first();
+        return $this->staffByRole($adminRole->id);
+    }
+
+    /**
+     * Get managers for this supplier
+     */
+    public function managers()
+    {
+        $managerRole = \Spatie\Permission\Models\Role::where('name', 'restaurant_manager')->first();
+        return $this->staffByRole($managerRole->id);
     }
 }

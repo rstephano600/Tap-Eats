@@ -434,71 +434,168 @@
     color: white;
 }
 </style>
+<style>
+/* Animated Background */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.search-container {
+    transition: transform 0.3s ease;
+}
+
+/* On mobile, stack inputs nicely */
+@media (max-width: 768px) {
+    .display-3 {
+        font-size: 2.5rem;
+    }
+    .search-container {
+        margin: 0 10px;
+    }
+}
+
+/* Hover effects for stat boxes */
+.stat-card {
+    transition: all 0.3s ease;
+}
+.stat-card:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-5px);
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border: none;
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    transform: scale(1.02);
+}
+</style>
+<style>
+.promo-banner {
+    /* Vibrant Gradient Mesh */
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.promo-overlay {
+    background-image: radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 70%, rgba(0, 0, 0, 0.1) 0%, transparent 50%);
+    opacity: 0.6;
+}
+
+.promo-code-box {
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease;
+}
+
+.promo-code-box:hover {
+    transform: scale(1.05);
+}
+
+.fw-black { font-weight: 900; }
+.fw-mono { font-family: 'Courier New', Courier, monospace; }
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.animate-bounce {
+    animation: bounce 2s infinite ease-in-out;
+}
+
+.btn-warning {
+    background: #ffc107;
+    color: #000;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+    background: #fff;
+    color: #ff416c;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-light:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+</style>
 @endpush
 
 @section('content')
 <!-- Hero Section -->
-<section class="hero-section">
-    <div class="container">
+<section class="hero-section position-relative overflow-hidden py-5 d-flex align-items-center min-vh-100" style="background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); background-size: 400% 400%; animation: gradientBG 15s ease infinite;">
+    <div class="container py-5">
         <div class="row align-items-center">
-            <div class="col-lg-8 mx-auto text-center">
-                <h1 class="display-4 fw-bold mb-4 animate-fade-in-up">Delicious Food Delivered to Your Door</h1>
-                <p class="lead mb-5 animate-fade-in-up" style="animation-delay: 0.2s;">Order from top-rated restaurants, subscribe to daily meals, or book catering services in Tanzania</p>
+            <div class="col-lg-10 mx-auto text-center">
+                <span class="badge bg-white text-dark rounded-pill px-3 py-2 mb-4 shadow-sm animate-fade-in-up">
+                    <i class="bi bi-star-fill text-warning me-1"></i> #1 Food Delivery in Tanzania
+                </span>
+
+                <h1 class="display-3 fw-bolder text-white mb-4 animate-fade-in-up" style="letter-spacing: -1px;">
+                    Delicious Food <span class="text-warning">Delivered</span> to Your Door
+                </h1>
                 
-                <!-- Search Box -->
-                <div class="search-box animate-fade-in-up" style="animation-delay: 0.4s;">
+                <p class="lead text-white-50 mb-5 mx-auto animate-fade-in-up" style="max-width: 700px; animation-delay: 0.2s;">
+                    Discover top-rated restaurants, subscribe to daily meal plans, or book professional catering services with ease.
+                </p>
+<!--                 
+                <div class="search-container p-2 p-md-3 bg-white rounded-4 shadow-lg mx-auto animate-fade-in-up" style="max-width: 900px; animation-delay: 0.4s;">
                     <form action="{{ route('searchsupplierlocation') }}" method="GET">
                         <div class="row g-2">
-                            <div class="col-md-5">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white border-0">
-                                        <i class="bi bi-geo-alt-fill text-primary-custom"></i>
+                            <div class="col-12 col-md-5">
+                                <div class="input-group h-100">
+                                    <span class="input-group-text bg-light border-0 py-3">
+                                        <i class="bi bi-geo-alt-fill text-danger"></i>
                                     </span>
-                                    <input type="text" class="form-control border-0" name="location" placeholder="Enter your delivery address">
+                                    <input type="text" class="form-control border-0 bg-light py-3" name="location" placeholder="Your delivery address...">
                                 </div>
                             </div>
-                            <div class="col-md-5">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white border-0">
-                                        <i class="bi bi-search"></i>
+                            <div class="col-12 col-md-5">
+                                <div class="input-group h-100">
+                                    <span class="input-group-text bg-light border-0 py-3">
+                                        <i class="bi bi-search text-primary"></i>
                                     </span>
-                                    <input type="text" class="form-control border-0" name="query" placeholder="Search for restaurants or dishes">
+                                    <input type="text" class="form-control border-0 bg-light py-3" name="query" placeholder="Restaurants or dishes...">
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-dark w-100">Search</button>
+                            <div class="col-12 col-md-2">
+                                <button type="submit" class="btn btn-warning w-100 h-100 py-3 fw-bold text-uppercase">
+                                    Search
+                                </button>
                             </div>
                         </div>
                     </form>
-                </div>
+                </div> -->
 
-                <!-- Quick Stats -->
-                <div class="row mt-5">
-                    <div class="col-md-4">
-                        <div class="stat-box animate-fade-in-up" style="animation-delay: 0.6s;">
-                            {{-- Display the dynamic count --}}
-                            <div class="stat-number text-white">
-                                {{ $supplierCount }}{{ $supplierCount > 100 ? '+' : '' }}
-                            </div>
-                            <div class="text-white">Restaurants</div>
+                <div class="row mt-5 pt-4 g-4 justify-content-center">
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="stat-card p-3 rounded-3 bg-white bg-opacity-10 border border-white border-opacity-25 animate-fade-in-up" style="animation-delay: 0.6s; backdrop-filter: blur(5px);">
+                            <h3 class="fw-bold text-white mb-0">{{ $supplierCount }}+</h3>
+                            <small class="text-white-50">Restaurants</small>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="stat-box animate-fade-in-up" style="animation-delay: 0.6s;">
-                            {{-- Display the dynamic count --}}
-                            <div class="stat-number text-white">
-                                {{ $customerProfile }}{{ $customerProfile > 100 ? '+' : '' }}
-                            </div>
-                            <div class="text-white">Customers</div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="stat-card p-3 rounded-3 bg-white bg-opacity-10 border border-white border-opacity-25 animate-fade-in-up" style="animation-delay: 0.7s; backdrop-filter: blur(5px);">
+                            <h3 class="fw-bold text-white mb-0">{{ $customerProfile }}+</h3>
+                            <small class="text-white-50">Happy Customers</small>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="stat-box animate-fade-in-up" style="animation-delay: 0.7s;">
-                            <div class="stat-number text-white">15K+</div>
-                            <div class="text-white">Orders Delivered</div>
+                    <div class="col-12 col-md-4 col-lg-3">
+                        <div class="stat-card p-3 rounded-3 bg-white bg-opacity-10 border border-white border-opacity-25 animate-fade-in-up" style="animation-delay: 0.8s; backdrop-filter: blur(5px);">
+                            <h3 class="fw-bold text-white mb-0">15K+</h3>
+                            <small class="text-white-50">Orders Delivered</small>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -673,16 +770,41 @@
 
 <!-- Promotional Banner -->
 <section class="container my-5">
-    <div class="promo-banner text-center">
-        <div class="row align-items-center">
-            <div class="col-md-8 mx-auto">
-                <h2 class="display-5 fw-bold mb-3">
-                    <i class="bi bi-gift-fill"></i> Special Weekend Offer!
+    <div class="promo-banner position-relative overflow-hidden rounded-5 shadow-lg py-5 px-4 text-white text-center">
+        <div class="position-absolute top-0 start-0 w-100 h-100 promo-overlay"></div>
+        
+        <div class="row align-items-center position-relative" style="z-index: 2;">
+            <div class="col-md-9 mx-auto">
+                <div class="badge bg-white text-danger fw-bold px-3 py-2 mb-3 rounded-pill shadow-sm animate-bounce">
+                    LIMITED TIME ONLY
+                </div>
+                
+                <h2 class="display-5 fw-black mb-2">
+                    <i class="bi bi-gift-fill me-2"></i>Special Weekend Offer!
                 </h2>
-                <h4 class="mb-4">Get 30% OFF on your first order</h4>
-                <p class="lead mb-4">Use code <strong class="fs-3">WELCOME30</strong> at checkout</p>
-                <a href="{{ route('showRegisterForm') }}" class="btn btn-light btn-lg">Order Now</a>
-                <p class="mt-3 small">*Valid for new customers only. Minimum order TSh 20,000</p>
+                
+                <h4 class="fw-light mb-4 opacity-90">Get <span class="fw-bold text-warning">30% OFF</span> on your first order</h4>
+                
+                <div class="promo-code-box d-inline-block bg-white bg-opacity-10 border border-white border-opacity-25 rounded-4 p-4 mb-4">
+                    <p class="mb-1 small text-uppercase fw-bold opacity-75">Use code at checkout</p>
+                    <div class="fs-2 fw-mono fw-bold tracking-widest text-warning">WELCOME30</div>
+                </div>
+
+                <div class="d-block mt-2">
+                    @auth
+                        <a href="{{ route('dailymenuitems') }}" class="btn btn-warning btn-lg px-5 py-3 fw-bold rounded-pill shadow">
+                            Explore Today's Menu <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    @else
+                        <a href="{{ route('showRegisterForm') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold rounded-pill shadow text-danger">
+                            Join Now & Save <i class="bi bi-person-plus-fill ms-2"></i>
+                        </a>
+                    @endauth
+                </div>
+
+                <p class="mt-4 small opacity-75 italic">
+                    *Valid for new customers only. Minimum order 20,000 TZS
+                </p>
             </div>
         </div>
     </div>

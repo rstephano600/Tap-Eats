@@ -12,13 +12,12 @@ return new class extends Migration
     
     public function up()
     {
-
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('username')->unique();
             $table->string('email')->unique();
-            $table->string('phone', 20)->unique();
+            $table->string('phone', 20)->unique()->nullable();
             $table->string('password');
             $table->integer('user_type_id')->nullable();
             $table->string('user_type')->nullable();
@@ -27,27 +26,20 @@ return new class extends Migration
             $table->string('verification_code', 10)->nullable();
             $table->rememberToken();
             $table->timestamp('last_login_at')->nullable();
-            $table->enum('login_status', ['online', 'offline'])->default('offline');
+            $table->enum('login_status', ['Online', 'Offline'])->default('Offline');
             $table->integer('login_times')->default(0);
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
-            $table->enum('status', ['active', 'inactive', 'suspended', 'pending_verification', 'locked', 'deleted'])->default('active');
+            $table->integer('supplier_id')->nullable();
+            $table->string('profile_image')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->string('last_login_ip')->nullable();
+            $table->enum('Status', ['Active', 'Inactive', 'Suspended', 'Pending_Verification', 'Locked', 'Deleted'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['email', 'user_type']);
-            $table->index('phone');
         });
-
-        Schema::create('user_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->string('description')->nullable();
-            $table->integer('created_by')->nullable();
-            $table->integer('updated_by')->nullable();
-            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
-        });
-
+        
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -63,47 +55,6 @@ return new class extends Migration
             $table->integer('last_activity')->index();
         });
 
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->string('slug')->unique()->nullable();
-            $table->string('descriptions', 200)->nullable();
-            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
-            $table->timestamps();
-        });
-
-        Schema::create('permissions', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->string('descriptions', 500)->nullable();
-            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
-            $table->timestamps();
-        });
-
-        Schema::create('role_users', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('role_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
-            $table->timestamps();
-        });
-
-        Schema::create('permission_roles', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('permission_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('role_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
-            $table->timestamps();
-        });
-
     }
 
     /**
@@ -111,13 +62,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_types');
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
-        Schema::dropIfExists('roles');
-        Schema::dropIfExists('permissions');
-        Schema::dropIfExists('role_users');
-        Schema::dropIfExists('permission_roles');
     }
 };

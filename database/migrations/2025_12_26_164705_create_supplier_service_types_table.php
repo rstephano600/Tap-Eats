@@ -16,14 +16,11 @@ return new class extends Migration
             $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
             $table->foreignId('service_type_id')->constrained()->onDelete('cascade');
             $table->json('additional_info')->nullable(); // Service-specific settings
-            $table->boolean('is_active')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->enum('Status', ['Active', 'Inactive', 'Locked', 'Deleted'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
-
-            $table->index('supplier_id');
-            $table->index('service_type_id');
         });
     }
 

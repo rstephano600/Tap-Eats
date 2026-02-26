@@ -11,12 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-Schema::table('user_types', function (Blueprint $table) {
-    $table->timestamps();
-});
+        Schema::create('user_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->string('slug')->unique();
+            $table->string('description')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->enum('Status', ['Active', 'Inactive', 'Locked', 'Deleted'])->default('Active');
+            $table->timestamps();
+            $table->softDeletes();
+        });
 
     }
-
     /**
      * Reverse the migrations.
      */

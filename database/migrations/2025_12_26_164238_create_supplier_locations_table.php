@@ -15,21 +15,21 @@ public function up()
             $table->id();
             $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
             $table->string('location_name', 100)->nullable(); // "Main Branch", "Downtown"
-            $table->string('address_line1', 255);
+            $table->string('address_line1', 255)->nullable();
             $table->string('address_line2', 255)->nullable();
-            $table->string('city', 100);
+            $table->string('city', 100)->nullable();
             $table->string('state', 100)->nullable();
-            $table->string('postal_code', 20);
+            $table->string('postal_code', 20)->nullable();
             $table->string('country', 100)->default('Tanzania');
-            $table->decimal('latitude', 10, 8);
-            $table->decimal('longitude', 11, 8);
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
             $table->string('landmark', 255)->nullable();
             $table->string('phone', 20)->nullable();
             $table->boolean('is_primary')->default(false);
             $table->boolean('is_active')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
+            $table->enum('Status', ['Active', 'Inactive', 'Locked', 'Deleted'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
 

@@ -42,33 +42,36 @@ public function up()
             
             // Delivery address
             $table->foreignId('delivery_address_id')->nullable()->constrained('customer_addresses')->onDelete('set null');
-            $table->string('delivery_address_text', 500); // Full address as text
+            $table->string('delivery_address_text', 500)->nullable(); // Full address as text
             $table->decimal('delivery_latitude', 10, 8)->nullable();
             $table->decimal('delivery_longitude', 11, 8)->nullable();
-            $table->string('delivery_phone', 20);
+            $table->string('delivery_phone', 20)->nullable();
             $table->string('delivery_contact_name', 100)->nullable();
             
             // Timing
-            $table->timestamp('scheduled_at')->nullable(); // For scheduled orders
+            $table->timestamp('scheduled_at')->nullable();
+            $table->timestamp('confirmed_at')->nullable();
             $table->timestamp('accepted_at')->nullable();
             $table->timestamp('prepared_at')->nullable();
+            $table->timestamp('ready_at')->nullable();
             $table->timestamp('dispatched_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
+            $table->timestamp('completed_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();
+            $table->text('cancellation_reason')->nullable();
             $table->integer('estimated_delivery_time')->nullable(); // minutes
             
             // Pricing
-            $table->decimal('subtotal', 10, 2);
+            $table->decimal('subtotal', 10, 2)->default(0.00);
             $table->decimal('delivery_fee', 10, 2)->default(0.00);
             $table->decimal('service_fee', 10, 2)->default(0.00);
             $table->decimal('tax_amount', 10, 2)->default(0.00);
             $table->decimal('discount_amount', 10, 2)->default(0.00);
-            $table->string('coupon_code', 50)->nullable();
-            $table->decimal('total_amount', 10, 2);
+            $table->string('coupon_code', 50)->nullable()->default(0.00);
+            $table->decimal('total_amount', 10, 2)->default(0.00);
             
             // Special instructions
-            $table->text('special_instructions')->nullable();
-            $table->text('cancellation_reason')->nullable();
+
             $table->text('rejection_reason')->nullable();
             
             // Delivery proof
@@ -80,18 +83,11 @@ public function up()
             $table->text('delivery_notes')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
+            $table->enum('Status', ['Active', 'Inactive', 'Locked', 'Deleted'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
-
-            $table->index('order_number');
-            $table->index(['customer_id', 'order_status']);
-            $table->index(['supplier_id', 'order_status']);
-            $table->index('guest_session_id');
-            $table->index('order_type');
-            $table->index('created_at');
         });
-    }
+    }            
 
 
     /**

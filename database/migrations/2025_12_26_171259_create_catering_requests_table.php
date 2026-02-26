@@ -13,19 +13,19 @@ public function up()
     {
         Schema::create('catering_requests', function (Blueprint $table) {
             $table->id();
-            $table->string('request_number', 50)->unique();
+            $table->string('request_number', 50)->unique()->nullable();
             $table->foreignId('customer_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('guest_session_id')->nullable()->constrained('guest_sessions')->onDelete('set null');
             
             // Event details
-            $table->string('event_type', 100); // Wedding, Corporate, Birthday, etc
-            $table->date('event_date');
-            $table->time('event_time');
+            $table->string('event_type', 100)->nullable(); // Wedding, Corporate, Birthday, etc
+            $table->date('event_date')->nullable();
+            $table->time('event_time')->nullable();
             $table->integer('duration_days')->nullable();
             $table->integer('duration_hours')->nullable();
-            $table->integer('guest_count');
+            $table->integer('guest_count')->nullable();
             $table->string('venue_name', 255)->nullable();
-            $table->string('venue_address', 500);
+            $table->string('venue_address', 500)->nullable();
             $table->decimal('venue_latitude', 10, 8)->nullable();
             $table->decimal('venue_longitude', 11, 8)->nullable();
             
@@ -38,20 +38,17 @@ public function up()
             $table->text('additional_requirements')->nullable();
             
             // Contact
-            $table->string('contact_name', 100);
-            $table->string('contact_email', 255);
-            $table->string('contact_phone', 20);
+            $table->string('contact_name', 100)->nullable();
+            $table->string('contact_email', 255)->nullable();
+            $table->string('contact_phone', 20)->nullable();
             
             // Status
             $table->enum('request_status', ['pending', 'quoted', 'accepted', 'rejected', 'completed', 'cancelled'])->default('pending');
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('status', ['active', 'inactive', 'locked', 'deleted'])->default('active');
+            $table->enum('Status', ['Active', 'Inactive', 'Locked', 'Deleted'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
-
-            $table->index(['customer_id', 'status']);
-            $table->index('event_date');
 
         });
     }

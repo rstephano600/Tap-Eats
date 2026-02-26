@@ -67,6 +67,7 @@ return new class extends Migration
             $table->json('attachments')->nullable();
             $table->timestamp('read_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

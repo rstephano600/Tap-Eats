@@ -10,7 +10,6 @@ use App\Services\PermissionResolver;
 class BusinessType extends Model
 {
     protected $table = 'business_types';
-        use SoftDeletes;
 
         protected $fillable = [
         'name',

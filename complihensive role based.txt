@@ -1,0 +1,1129 @@
+I'll create a comprehensive role and permission structure for your multi-tenant food delivery, POS, and catering management system.
+
+## 1. Install Spatie Permission Package:
+
+```bash
+composer require spatie/laravel-permission
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+php artisan migrate
+```
+
+## 2. Create Roles and Permissions Migration:
+
+```bash
+php artisan make:migration create_custom_roles_and_permissions_setup
+```
+
+```php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        // Reset cached roles and permissions
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+        // Create permissions for each module
+        $permissions = [
+            // Dashboard
+            'view_dashboard',
+            'view_analytics',
+            'view_reports',
+            
+            // Orders Management
+            'view_orders',
+            'create_orders',
+            'edit_orders',
+            'delete_orders',
+            'cancel_orders',
+            'refund_orders',
+            'assign_drivers',
+            'update_order_status',
+            'view_all_orders', // Super Admin only
+            
+            // Menu Management
+            'view_menu_items',
+            'create_menu_items',
+            'edit_menu_items',
+            'delete_menu_items',
+            'manage_menu_categories',
+            'manage_menu_variants',
+            'manage_menu_addons',
+            'import_menu_items',
+            'export_menu_items',
+            
+            // Supplier/Restaurant Management
+            'view_suppliers',
+            'create_suppliers',
+            'edit_suppliers',
+            'delete_suppliers',
+            'manage_supplier_settings',
+            'manage_supplier_hours',
+            'manage_supplier_delivery_zones',
+            'view_all_suppliers', // Super Admin only
+            
+            // Customer Management
+            'view_customers',
+            'create_customers',
+            'edit_customers',
+            'delete_customers',
+            'view_customer_orders',
+            'manage_customer_addresses',
+            'ban_customers',
+            
+            // Driver Management
+            'view_drivers',
+            'create_drivers',
+            'edit_drivers',
+            'delete_drivers',
+            'assign_orders_to_drivers',
+            'track_drivers',
+            'manage_driver_payouts',
+            
+            // Staff Management
+            'view_staff',
+            'create_staff',
+            'edit_staff',
+            'delete_staff',
+            'assign_roles',
+            'manage_permissions',
+            
+            // POS Management
+            'access_pos',
+            'create_pos_orders',
+            'process_payments',
+            'manage_cash_drawer',
+            'print_receipts',
+            'void_transactions',
+            'apply_discounts',
+            
+            // Catering Management
+            'view_catering_orders',
+            'create_catering_orders',
+            'edit_catering_orders',
+            'approve_catering_orders',
+            'assign_catering_staff',
+            'manage_catering_packages',
+            
+            // Inventory Management
+            'view_inventory',
+            'manage_inventory',
+            'create_purchase_orders',
+            'receive_inventory',
+            'adjust_stock',
+            'view_stock_reports',
+            'manage_suppliers_inventory',
+            
+            // Financial Management
+            'view_financial_reports',
+            'view_sales_reports',
+            'view_revenue_reports',
+            'manage_pricing',
+            'manage_taxes',
+            'manage_service_fees',
+            'process_payouts',
+            'manage_commissions',
+            'export_financial_data',
+            'view_all_financials', // Super Admin only
+            
+            // Marketing & Promotions
+            'view_promotions',
+            'create_promotions',
+            'edit_promotions',
+            'delete_promotions',
+            'manage_coupons',
+            'send_notifications',
+            'manage_campaigns',
+            
+            // Reviews & Ratings
+            'view_reviews',
+            'respond_to_reviews',
+            'moderate_reviews',
+            'delete_reviews',
+            
+            // Support & Tickets
+            'view_support_tickets',
+            'create_support_tickets',
+            'respond_to_tickets',
+            'assign_tickets',
+            'close_tickets',
+            'view_all_tickets', // Super Admin only
+            
+            // Settings
+            'manage_general_settings',
+            'manage_payment_settings',
+            'manage_notification_settings',
+            'manage_email_templates',
+            'manage_sms_settings',
+            'manage_integrations',
+            'manage_api_keys',
+            'view_system_logs',
+            
+            // Reports
+            'view_order_reports',
+            'view_inventory_reports',
+            'view_driver_reports',
+            'view_customer_reports',
+            'view_performance_reports',
+            'export_reports',
+            
+            // System Administration
+            'manage_system_settings',
+            'manage_roles_permissions',
+            'view_audit_logs',
+            'manage_backups',
+            'clear_cache',
+            'access_developer_tools',
+        ];
+
+        // Create all permissions
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission]);
+        }
+
+        // Create roles and assign permissions
+        $this->createSuperAdminRole();
+        $this->createAdminRole();
+        $this->createRestaurantManagerRole();
+        $this->createRestaurantStaffRole();
+        $this->createCashierRole();
+        $this->createDriverRole();
+        $this->createCustomerServiceRole();
+        $this->createAccountantRole();
+        $this->createInventoryManagerRole();
+        $this->createCateringManagerRole();
+    }
+
+    private function createSuperAdminRole()
+    {
+        $role = Role::create(['name' => 'super_admin']);
+        // Super Admin has ALL permissions
+        $role->givePermissionTo(Permission::all());
+    }
+
+    private function createAdminRole()
+    {
+        $role = Role::create(['name' => 'admin']);
+        
+        $permissions = [
+            // Dashboard & Analytics
+            'view_dashboard',
+            'view_analytics',
+            'view_reports',
+            
+            // Orders - Full access for their supplier
+            'view_orders',
+            'create_orders',
+            'edit_orders',
+            'cancel_orders',
+            'refund_orders',
+            'assign_drivers',
+            'update_order_status',
+            
+            // Menu - Full access
+            'view_menu_items',
+            'create_menu_items',
+            'edit_menu_items',
+            'delete_menu_items',
+            'manage_menu_categories',
+            'manage_menu_variants',
+            'manage_menu_addons',
+            'import_menu_items',
+            'export_menu_items',
+            
+            // Supplier Settings
+            'edit_suppliers',
+            'manage_supplier_settings',
+            'manage_supplier_hours',
+            'manage_supplier_delivery_zones',
+            
+            // Customer Management
+            'view_customers',
+            'edit_customers',
+            'view_customer_orders',
+            'manage_customer_addresses',
+            
+            // Driver Management
+            'view_drivers',
+            'create_drivers',
+            'edit_drivers',
+            'assign_orders_to_drivers',
+            'track_drivers',
+            
+            // Staff Management
+            'view_staff',
+            'create_staff',
+            'edit_staff',
+            'assign_roles',
+            
+            // POS
+            'access_pos',
+            'create_pos_orders',
+            'process_payments',
+            'manage_cash_drawer',
+            'print_receipts',
+            'apply_discounts',
+            
+            // Catering
+            'view_catering_orders',
+            'create_catering_orders',
+            'edit_catering_orders',
+            'approve_catering_orders',
+            'manage_catering_packages',
+            
+            // Inventory
+            'view_inventory',
+            'manage_inventory',
+            'create_purchase_orders',
+            'receive_inventory',
+            'adjust_stock',
+            'view_stock_reports',
+            
+            // Financial
+            'view_financial_reports',
+            'view_sales_reports',
+            'view_revenue_reports',
+            'manage_pricing',
+            'manage_taxes',
+            'manage_service_fees',
+            
+            // Marketing
+            'view_promotions',
+            'create_promotions',
+            'edit_promotions',
+            'delete_promotions',
+            'manage_coupons',
+            'send_notifications',
+            
+            // Reviews
+            'view_reviews',
+            'respond_to_reviews',
+            'moderate_reviews',
+            
+            // Support
+            'view_support_tickets',
+            'respond_to_tickets',
+            'assign_tickets',
+            'close_tickets',
+            
+            // Reports
+            'view_order_reports',
+            'view_inventory_reports',
+            'view_driver_reports',
+            'view_customer_reports',
+            'export_reports',
+        ];
+        
+        $role->givePermissionTo($permissions);
+    }
+
+    private function createRestaurantManagerRole()
+    {
+        $role = Role::create(['name' => 'restaurant_manager']);
+        
+        $permissions = [
+            'view_dashboard',
+            'view_analytics',
+            
+            // Orders
+            'view_orders',
+            'create_orders',
+            'edit_orders',
+            'update_order_status',
+            'assign_drivers',
+            
+            // Menu
+            'view_menu_items',
+            'create_menu_items',
+            'edit_menu_items',
+            'manage_menu_categories',
+            
+            // Staff
+            'view_staff',
+            'create_staff',
+            'edit_staff',
+            
+            // POS
+            'access_pos',
+            'create_pos_orders',
+            'process_payments',
+            
+            // Inventory
+            'view_inventory',
+            'manage_inventory',
+            'adjust_stock',
+            
+            // Reports
+            'view_order_reports',
+            'view_sales_reports',
+            
+            // Reviews
+            'view_reviews',
+            'respond_to_reviews',
+        ];
+        
+        $role->givePermissionTo($permissions);
+    }
+
+    private function createRestaurantStaffRole()
+    {
+        $role = Role::create(['name' => 'restaurant_staff']);
+        
+        $permissions = [
+            'view_dashboard',
+            'view_orders',
+            'update_order_status',
+            'view_menu_items',
+            'access_pos',
+            'create_pos_orders',
+            'view_inventory',
+        ];
+        
+        $role->givePermissionTo($permissions);
+    }
+
+    private function createCashierRole()
+    {
+        $role = Role::create(['name' => 'cashier']);
+        
+        $permissions = [
+            'access_pos',
+            'create_pos_orders',
+            'process_payments',
+            'manage_cash_drawer',
+            'print_receipts',
+            'apply_discounts',
+            'view_orders',
+        ];
+        
+        $role->givePermissionTo($permissions);
+    }
+
+    private function createDriverRole()
+    {
+        $role = Role::create(['name' => 'driver']);
+        
+        $permissions = [
+            'view_dashboard',
+            'view_orders',
+            'update_order_status',
+        ];
+        
+        $role->givePermissionTo($permissions);
+    }
+
+    private function createCustomerServiceRole()
+    {
+        $role = Role::create(['name' => 'customer_service']);
+        
+        $permissions = [
+            'view_dashboard',
+            'view_orders',
+            'edit_orders',
+            'cancel_orders',
+            'refund_orders',
+            'view_customers',
+            'edit_customers',
+            'view_support_tickets',
+            'create_support_tickets',
+            'respond_to_tickets',
+            'close_tickets',
+            'view_reviews',
+            'respond_to_reviews',
+        ];
+        
+        $role->givePermissionTo($permissions);
+    }
+
+    private function createAccountantRole()
+    {
+        $role = Role::create(['name' => 'accountant']);
+        
+        $permissions = [
+            'view_dashboard',
+            'view_financial_reports',
+            'view_sales_reports',
+            'view_revenue_reports',
+            'process_payouts',
+            'manage_commissions',
+            'export_financial_data',
+            'view_orders',
+            'export_reports',
+        ];
+        
+        $role->givePermissionTo($permissions);
+    }
+
+    private function createInventoryManagerRole()
+    {
+        $role = Role::create(['name' => 'inventory_manager']);
+        
+        $permissions = [
+            'view_dashboard',
+            'view_inventory',
+            'manage_inventory',
+            'create_purchase_orders',
+            'receive_inventory',
+            'adjust_stock',
+            'view_stock_reports',
+            'manage_suppliers_inventory',
+            'view_menu_items',
+            'edit_menu_items',
+        ];
+        
+        $role->givePermissionTo($permissions);
+    }
+
+    private function createCateringManagerRole()
+    {
+        $role = Role::create(['name' => 'catering_manager']);
+        
+        $permissions = [
+            'view_dashboard',
+            'view_catering_orders',
+            'create_catering_orders',
+            'edit_catering_orders',
+            'approve_catering_orders',
+            'assign_catering_staff',
+            'manage_catering_packages',
+            'view_menu_items',
+            'view_customers',
+            'view_financial_reports',
+        ];
+        
+        $role->givePermissionTo($permissions);
+    }
+
+    public function down()
+    {
+        // Reset cached roles and permissions
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        
+        // Delete all roles and permissions
+        Role::query()->delete();
+        Permission::query()->delete();
+    }
+};
+```
+
+## 3. Update User Model:
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class User extends Authenticatable
+{
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'password',
+        'supplier_id', // Links user to a specific restaurant/supplier
+        'profile_image',
+        'is_active',
+        'email_verified_at',
+        'phone_verified_at',
+        'last_login_at',
+        'last_login_ip',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
+        'last_login_at' => 'datetime',
+        'is_active' => 'boolean',
+        'password' => 'hashed',
+    ];
+
+    // Relationships
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+
+    public function assignedOrders()
+    {
+        return $this->hasMany(Order::class, 'driver_id');
+    }
+
+    public function customerOrders()
+    {
+        return $this->hasMany(Order::class, 'customer_id');
+    }
+
+    // Helper Methods
+    public function isSuperAdmin()
+    {
+        return $this->hasRole('super_admin');
+    }
+
+    public function isAdmin()
+    {
+        return $this->hasRole('admin');
+    }
+
+    public function isRestaurantManager()
+    {
+        return $this->hasRole('restaurant_manager');
+    }
+
+    public function isDriver()
+    {
+        return $this->hasRole('driver');
+    }
+
+    public function isCashier()
+    {
+        return $this->hasRole('cashier');
+    }
+
+    /**
+     * Check if user can manage a specific supplier
+     */
+    public function canManageSupplier($supplierId)
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+        
+        return $this->supplier_id == $supplierId;
+    }
+
+    /**
+     * Get accessible suppliers for this user
+     */
+    public function getAccessibleSuppliers()
+    {
+        if ($this->isSuperAdmin()) {
+            return Supplier::all();
+        }
+        
+        if ($this->supplier_id) {
+            return Supplier::where('id', $this->supplier_id)->get();
+        }
+        
+        return collect();
+    }
+
+    /**
+     * Scope to filter users by supplier
+     */
+    public function scopeForSupplier($query, $supplierId)
+    {
+        return $query->where('supplier_id', $supplierId);
+    }
+
+    /**
+     * Scope to get active users
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+}
+```
+
+## 4. Create Migration to Add supplier_id to Users:
+
+```bash
+php artisan make:migration add_supplier_id_to_users_table
+```
+
+```php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('supplier_id')->nullable()->after('id')->constrained('suppliers')->onDelete('cascade');
+            $table->string('profile_image')->nullable()->after('phone');
+            $table->boolean('is_active')->default(true)->after('profile_image');
+            $table->timestamp('phone_verified_at')->nullable()->after('email_verified_at');
+            $table->timestamp('last_login_at')->nullable();
+            $table->string('last_login_ip')->nullable();
+            $table->softDeletes();
+        });
+    }
+
+    public function down()
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['supplier_id']);
+            $table->dropColumn([
+                'supplier_id',
+                'profile_image',
+                'is_active',
+                'phone_verified_at',
+                'last_login_at',
+                'last_login_ip',
+            ]);
+            $table->dropSoftDeletes();
+        });
+    }
+};
+```
+
+## 5. Create Middleware for Permission Checks:
+
+```bash
+php artisan make:middleware CheckSupplierAccess
+```
+
+```php
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class CheckSupplierAccess
+{
+    /**
+     * Handle an incoming request.
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        $user = auth()->user();
+        
+        // Super admin can access everything
+        if ($user->isSuperAdmin()) {
+            return $next($request);
+        }
+        
+        // Get supplier_id from route parameter
+        $supplierId = $request->route('supplier') ?? $request->route('supplier_id');
+        
+        // If no supplier in route, check if user has a supplier assigned
+        if (!$supplierId && $user->supplier_id) {
+            return $next($request);
+        }
+        
+        // Check if user can manage this supplier
+        if ($supplierId && !$user->canManageSupplier($supplierId)) {
+            abort(403, 'Unauthorized access to this restaurant.');
+        }
+        
+        return $next($request);
+    }
+}
+```
+
+## 6. Register Middleware in app/Http/Kernel.php:
+
+```php
+protected $middlewareAliases = [
+    // ... existing middleware
+    'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+    'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+    'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+    'supplier.access' => \App\Http\Middleware\CheckSupplierAccess::class,
+];
+```
+
+## 7. Create Seeder for Default Super Admin:
+
+```bash
+php artisan make:seeder SuperAdminSeeder
+```
+
+```php
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
+class SuperAdminSeeder extends Seeder
+{
+    public function run()
+    {
+        $superAdmin = User::create([
+            'name' => 'Super Administrator',
+            'email' => 'superadmin@tapeats.com',
+            'phone' => '+255123456789',
+            'password' => Hash::make('password'),
+            'email_verified_at' => now(),
+            'is_active' => true,
+        ]);
+
+        $superAdmin->assignRole('super_admin');
+    }
+}
+```
+
+## 8. Example Usage in Controllers:
+
+```php
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Order;
+use Illuminate\Http\Request;
+
+class OrderController extends Controller
+{
+    public function index()
+    {
+        // Check permission
+        $this->authorize('view_orders');
+        
+        $user = auth()->user();
+        
+        // Super admin sees all orders
+        if ($user->isSuperAdmin()) {
+            $orders = Order::with(['supplier', 'customer'])->latest()->paginate(20);
+        } else {
+            // Admin sees only their supplier's orders
+            $orders = Order::where('supplier_id', $user->supplier_id)
+                ->with(['customer'])
+                ->latest()
+                ->paginate(20);
+        }
+        
+        return view('admin.orders.index', compact('orders'));
+    }
+
+    public function updateStatus(Request $request, Order $order)
+    {
+        // Check permission
+        $this->authorize('update_order_status');
+        
+        // Check supplier access
+        if (!auth()->user()->canManageSupplier($order->supplier_id)) {
+            abort(403, 'Unauthorized');
+        }
+        
+        $order->update([
+            'order_status' => $request->status,
+        ]);
+        
+        return redirect()->back()->with('success', 'Order status updated');
+    }
+}
+```
+
+## 9. Example Usage in Blade Views:
+
+```blade
+@role('super_admin')
+    <a href="{{ route('admin.suppliers.index') }}" class="nav-link">
+        <i class="bi bi-building"></i> All Restaurants
+    </a>
+@endrole
+
+@can('view_financial_reports')
+    <a href="{{ route('admin.reports.financial') }}" class="nav-link">
+        <i class="bi bi-graph-up"></i> Financial Reports
+    </a>
+@endcan
+
+@can('manage_menu_items')
+    <button class="btn btn-primary">Add Menu Item</button>
+@endcan
+
+@hasanyrole('admin|restaurant_manager')
+    <div class="dashboard-stats">
+        <!-- Show restaurant stats -->
+    </div>
+@endhasanyrole
+```
+
+## 10. Run Migrations and Seeders:
+
+```bash
+php artisan migrate
+php artisan db:seed --class=SuperAdminSeeder
+```
+
+## Summary of Role Structure:
+
+| Role | Access Level | Use Case |
+|------|--------------|----------|
+| **Super Admin** | All suppliers, all permissions | Platform owner/administrator |
+| **Admin** | Single supplier, most permissions | Restaurant owner/admin |
+| **Restaurant Manager** | Single supplier, operational permissions | Day-to-day manager |
+| **Restaurant Staff** | Single supplier, limited permissions | Kitchen/front staff |
+| **Cashier** | POS only | Cashier operations |
+| **Driver** | Delivery orders only | Delivery drivers |
+| **Customer Service** | Support & orders | Customer support team |
+| **Accountant** | Financial reports only | Finance team |
+| **Inventory Manager** | Inventory & stock | Inventory management |
+| **Catering Manager** | Catering operations | Event catering |
+
+This structure provides granular control while maintaining security and multi-tenancy!
+        <a href="{{ route('admin.roles.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. Roles
+        </a>
+        <!-- 
+
+
+        <a href="{{ route('admin.staff.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> Manage staff
+        </a>
+        <a href="{{ route('orders.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. orders
+        </a>
+
+        <a href="{{ route('supplier.suppliers.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. your Business
+        </a>
+        <a href="{{ route('supplierlocations') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. your Business Location
+        </a>
+        <a href="{{ route('supplier.financial.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. your Financial Informations
+        </a>
+        <a href="{{ route('suppliers.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. Suppliers
+        </a>
+        <a href="{{ route('supplierlocations') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. Suppliers Locations
+        </a>
+        <a href="{{ route('busines-types.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. Business Types
+        </a>
+        <a href="{{ route('service-types.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. Services Types
+        </a>
+
+
+
+
+
+        <a href="{{ route('role-users.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. Users Roles
+        </a> 
+
+        <a href="{{ route('permissions.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. Permissions
+        </a>
+        <a href="{{ route('permission-roles.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. Permissions Roles
+        </a> 
+        <a href="{{ route('user-permissions.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. USers Permissions
+        </a> 
+
+        <br><br>
+        <a href="{{ route('customer.profile') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. Your Profile
+        </a> 
+        <a href="{{ route('customer.addresses.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. Your Address
+        </a> 
+
+
+@permission('delivery-food')
+            <a href="{{ route('users.create') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> Add User
+        </a> 
+@endpermission
+
+        @if(auth()->user()->hasPermission('manage-roles'))
+<a href="{{ route('roles.index') }}" class="list-group-item">
+    <i class="bi bi-person-badge"></i> Roles
+</a>
+@endif
+
+
+
+
+        <a href="{{ route('users.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. Users
+        </a>
+        <a href="{{ route('guest-sessions.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. Guests Users
+        </a>
+        <a href="{{ route('customer-profiles.index') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> M. Profiles
+        </a>
+
+        @if(Auth::check())
+            @php $role = Auth::user()->role; @endphp
+
+            @if(in_array($role, ['super_admin', 'admin']))
+                <small class="text-uppercase text-muted fw-bold mt-4 mb-2 ps-3" style="font-size: 0.65rem; letter-spacing: 1px;">Administration</small>
+                <a href="{{ url('/admin/users') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('admin/users*') ? 'active' : '' }}">
+                    <i class="bi bi-people me-2"></i> Users
+                </a>
+                <a href="{{ url('/admin/suppliers') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('admin/suppliers*') ? 'active' : '' }}">
+                    <i class="bi bi-shop-window me-2"></i> Suppliers
+                </a>
+            @endif
+
+            @if($role === 'supplier')
+                <small class="text-uppercase text-muted fw-bold mt-4 mb-2 ps-3" style="font-size: 0.65rem; letter-spacing: 1px;">Store Management</small>
+                <a href="{{ url('/supplier/menu') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('supplier/menu*') ? 'active' : '' }}">
+                    <i class="bi bi-journal-text me-2"></i> My Menu
+                </a>
+                <a href="{{ url('/supplier/orders') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('supplier/orders*') ? 'active' : '' }}">
+                    <i class="bi bi-bag-plus me-2"></i> Orders Received
+                </a>
+            @endif
+
+            @if($role === 'customer')
+                <small class="text-uppercase text-muted fw-bold mt-4 mb-2 ps-3" style="font-size: 0.65rem; letter-spacing: 1px;">Hungry?</small>
+                <a href="{{ url('/menu') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('menu*') ? 'active' : '' }}">
+                    <i class="bi bi-search me-2"></i> Browse Food
+                </a>
+                <a href="{{ url('/orders') }}" class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('orders*') ? 'active' : '' }}">
+                    <i class="bi bi-clock-history me-2"></i> Order History
+                </a>
+            @endif
+        @endif
+    </div>
+</div>
+
+
+
+
+
+<div class="border-end bg-darkblue" id="sidebar-wrapper">
+
+    {{-- Brand --}}
+    <div class="sidebar-heading text-white fw-bold border-bottom border-secondary p-4 d-flex align-items-center">
+        <img src="{{ asset('images/logo/ejossolution.png') }}"
+             alt="TapEats Logo"
+             class="me-2"
+             style="height: 40px; width: auto; object-fit: contain;">
+        <span>TapEats</span>
+    </div>
+
+    <div class="list-group list-group-flush px-2 mt-3">
+
+        {{-- ================= MAIN ================= --}}
+
+
+        @permission('manage-roles')
+        <a href="{{ url('/dashboard') }}"
+           class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('dashboard*') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2 me-2"></i> Dashboard
+        </a>
+        @endpermission
+
+        {{-- ================= ADMIN ================= --}}
+        @permission('manage-roles')
+        <small class="text-uppercase text-muted fw-bold mt-4 ps-3"
+               style="font-size: 0.65rem; letter-spacing: 1px;">
+            Administration
+        </small>
+
+            @permission('manage-roles')
+            <a href="{{ route('users.index') }}"
+               class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('users*') ? 'active' : '' }}">
+                <i class="bi bi-people me-2"></i> Users
+            </a>
+            @endpermission
+
+            @permission('manage-roles')
+            <a href="{{ route('roles.index') }}"
+               class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('roles*') ? 'active' : '' }}">
+                <i class="bi bi-person-badge me-2"></i> Roles
+            </a>
+            @endpermission
+
+            @permission('manage-roles')
+            <a href="{{ route('permissions.index') }}"
+               class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('permissions*') ? 'active' : '' }}">
+                <i class="bi bi-shield-lock me-2"></i> Permissions
+            </a>
+            @endpermission
+
+            @permission('assign_roles')
+            <a href="{{ route('role-users.index') }}"
+               class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('role-users*') ? 'active' : '' }}">
+                <i class="bi bi-people me-2"></i> User Roles
+            </a>
+            @endpermission
+
+            @permission('manage-roles')
+            <a href="{{ route('permission-roles.index') }}"
+               class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('permission-roles*') ? 'active' : '' }}">
+                <i class="bi bi-key me-2"></i> Role Permissions
+            </a>
+            @endpermission
+        @endpermission
+
+
+        {{-- ================= SUPPLIER ================= --}}
+        @permission('supplier_access')
+        <small class="text-uppercase text-muted fw-bold mt-4 mb-2 ps-3"
+               style="font-size: 0.65rem; letter-spacing: 1px;">
+            Store Management
+        </small>
+
+        @permission('manage_menu')
+        <a href="{{ url('/supplier/menu') }}"
+           class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('supplier/menu*') ? 'active' : '' }}">
+            <i class="bi bi-journal-text me-2"></i> My Menu
+        </a>
+        @endpermission
+
+        @permission('view_supplier_orders')
+        <a href="{{ url('/supplier/orders') }}"
+           class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('supplier/orders*') ? 'active' : '' }}">
+            <i class="bi bi-bag-plus me-2"></i> Orders Received
+        </a>
+        @endpermission
+        @endpermission
+
+
+        {{-- ================= CUSTOMER ================= --}}
+        @permission('customer_access')
+        <small class="text-uppercase text-muted fw-bold mt-4 mb-2 ps-3"
+               style="font-size: 0.65rem; letter-spacing: 1px;">
+            Hungry?
+        </small>
+
+        @permission('browse_menu')
+        <a href="{{ url('/menu') }}"
+           class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('menu*') ? 'active' : '' }}">
+            <i class="bi bi-search me-2"></i> Browse Food
+        </a>
+        @endpermission
+
+        @permission('view_orders')
+        <a href="{{ url('/orders') }}"
+           class="list-group-item list-group-item-action rounded mb-1 {{ Request::is('orders*') ? 'active' : '' }}">
+            <i class="bi bi-clock-history me-2"></i> Order History
+        </a>
+        @endpermission
+        @endpermission
+
+    </div>
+</div> -->
