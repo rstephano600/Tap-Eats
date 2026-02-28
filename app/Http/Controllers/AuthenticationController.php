@@ -180,7 +180,7 @@ public function login(Request $request)
             ]);
 
             // Assign default role
-            $user->assignRole('customer');
+            $user->assignRole('user');
 
             // Auto login after registration
             Auth::login($user);

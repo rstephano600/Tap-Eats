@@ -17,39 +17,65 @@ class DashboardController extends BaseController
         $supplier = $this->getAuthSupplier();
 
         // =============================================
-        // STATS — scoped to supplier or global for admin
+        // DETERMINE ACCESS LEVEL
+        // null  = super_admin  (sees everything)
+        // false = no supplier  (sees nothing / own profile only)
+        // Supplier = scoped    (sees only their supplier data)
         // =============================================
-        $ordersQuery    = Order::query();
-        $suppliersQuery = Supplier::query();
-        $menuQuery      = MenuItem::query();
-        $usersQuery     = User::query();
 
-        if ($supplier) {
+        $isSuperAdmin   = $supplier === null;
+        $hasNoSupplier  = $supplier === false;
+        $isSupplierUser = $supplier instanceof Supplier;
+
+        // =============================================
+        // BUILD SCOPED QUERIES
+        // =============================================
+        $ordersQuery = Order::query();
+        $menuQuery   = MenuItem::query();
+
+        if ($isSuperAdmin) {
+            // No filter — sees everything
+        } elseif ($hasNoSupplier) {
+            // Regular user with no supplier — sees nothing
+            $ordersQuery->whereRaw('0 = 1');
+            $menuQuery->whereRaw('0 = 1');
+        } else {
+            // Supplier owner or member — scoped to their supplier
             $ordersQuery->where('supplier_id', $supplier->id);
             $menuQuery->where('supplier_id', $supplier->id);
         }
 
+        // =============================================
+        // STATS
+        // =============================================
         $stats = [
-            'total_orders'     => $ordersQuery->count(),
+            'total_orders'     => (clone $ordersQuery)->count(),
             'pending_orders'   => (clone $ordersQuery)->where('order_status', 'pending')->count(),
             'completed_orders' => (clone $ordersQuery)->where('order_status', 'completed')->count(),
             'total_revenue'    => (clone $ordersQuery)->where('order_status', 'completed')->sum('total_amount'),
-            'total_suppliers'  => $suppliersQuery->count(),
-            'total_menu_items' => $menuQuery->count(),
-            'total_users'      => $usersQuery->count(),
+            'total_menu_items' => (clone $menuQuery)->count(),
             'today_orders'     => (clone $ordersQuery)->whereDate('created_at', today())->count(),
+
+            // Admin-only stats
+            'total_suppliers'  => $isSuperAdmin ? Supplier::count() : ($isSupplierUser ? 1 : 0),
+            'total_users'      => $isSuperAdmin ? User::count() : 0,
         ];
 
-        // Recent orders
+        // =============================================
+        // RECENT ORDERS
+        // =============================================
         $recentOrders = (clone $ordersQuery)
             ->with(['customer', 'supplier'])
             ->orderBy('created_at', 'desc')
             ->limit(6)
             ->get();
 
-        // Monthly revenue for chart (last 6 months)
+        // =============================================
+        // MONTHLY REVENUE CHART (last 6 months)
+        // =============================================
         $monthlyRevenue = [];
         $monthlyLabels  = [];
+
         for ($i = 5; $i >= 0; $i--) {
             $month = Carbon::now()->subMonths($i);
             $monthlyLabels[]  = $month->format('M Y');
@@ -60,16 +86,22 @@ class DashboardController extends BaseController
                 ->sum('total_amount');
         }
 
-        // Top suppliers by orders (admin only)
-        $topSuppliers = Supplier::withCount('orders')
-            ->orderBy('orders_count', 'desc')
-            ->limit(5)
-            ->get();
+        // =============================================
+        // TOP SUPPLIERS — admin only
+        // =============================================
+        $topSuppliers = collect(); // empty by default
+
+        if ($isSuperAdmin) {
+            $topSuppliers = Supplier::withCount('orders')
+                ->orderBy('orders_count', 'desc')
+                ->limit(5)
+                ->get();
+        }
 
         return view('in.dashboard.dashboard', compact(
             'user', 'supplier', 'stats',
-            'recentOrders', 'monthlyRevenue',
-            'monthlyLabels', 'topSuppliers'
+            'recentOrders', 'monthlyRevenue', 'monthlyLabels',
+            'topSuppliers', 'isSuperAdmin', 'hasNoSupplier', 'isSupplierUser'
         ));
     }
 }

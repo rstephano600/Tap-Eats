@@ -8,49 +8,66 @@ use App\Models\SupplierUser;
 class BaseController extends Controller
 {
     /**
-     * Get the supplier that belongs to the currently logged-in user.
-     * Checks both: direct owner (user_id) AND supplier_user pivot table.
-     * Returns null if super_admin or no supplier found.
+     * Check if current user is super admin
      */
-    protected function getAuthSupplier(): ?Supplier
+    protected function isSuperAdmin(): bool
+    {
+        return auth()->user()->hasRole('super_admin');
+    }
+
+    /**
+     * Get the supplier that belongs to the currently logged-in user.
+     * Returns null ONLY for super_admin.
+     * Returns false if user has no supplier at all.
+     * Returns Supplier if found.
+     */
+    protected function getAuthSupplier(): Supplier|null|false
     {
         $user = auth()->user();
 
-        // Super admin sees everything — no supplier filter
+        // Super admin — return null (sees everything)
         if ($user->hasRole('super_admin')) {
             return null;
         }
 
-        // Check if user is the direct owner of a supplier
+        // Check direct ownership
         $supplier = Supplier::where('user_id', $user->id)->first();
-
         if ($supplier) {
             return $supplier;
         }
 
-        // Check if user belongs to a supplier via supplier_user table
+        // Check supplier_user pivot table
         $supplierUser = SupplierUser::where('user_id', $user->id)->first();
-
         if ($supplierUser) {
             return Supplier::find($supplierUser->supplier_id);
         }
 
-        return null; // No supplier found
+        // User has NO supplier — return false (sees nothing)
+        return false;
     }
 
     /**
      * Apply supplier filter to any query.
-     * Pass your query and it will automatically scope it.
+     *
+     * null  = super_admin  → no filter (sees all)
+     * false = no supplier  → sees nothing (where 0=1)
+     * Supplier = scoped    → filtered by supplier_id
      */
     protected function scopeToSupplier($query, string $column = 'supplier_id')
     {
         $supplier = $this->getAuthSupplier();
 
-        // null means super_admin — no filter applied
-        if ($supplier) {
-            $query->where($column, $supplier->id);
+        if ($supplier === null) {
+            // Super admin — no filter
+            return $query;
         }
 
-        return $query;
+        if ($supplier === false) {
+            // No supplier found — return empty results
+            return $query->whereRaw('0 = 1');
+        }
+
+        // Scoped to their supplier
+        return $query->where($column, $supplier->id);
     }
 }

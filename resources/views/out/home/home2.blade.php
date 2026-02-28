@@ -538,7 +538,7 @@
         <div class="row align-items-center">
             <div class="col-lg-10 mx-auto text-center">
                 <span class="badge bg-white text-dark rounded-pill px-3 py-2 mb-4 shadow-sm animate-fade-in-up">
-                    <i class="bi bi-star-fill text-warning me-1"></i> #1 Food Delivery in Tanzania
+                    <i class="bi bi-star-fill text-warning me-1"></i> 1 Food Delivery in Tanzania
                 </span>
 
                 <h1 class="display-3 fw-bolder text-white mb-4 animate-fade-in-up" style="letter-spacing: -1px;">
@@ -811,7 +811,7 @@
 </section>
 
 <!-- Customer Testimonials -->
-<section class="py-5">
+<section class="py-5" style="display:none;">
     <div class="container">
         <h2 class="text-center section-title">What Our Customers Say</h2>
         <div class="row g-4">

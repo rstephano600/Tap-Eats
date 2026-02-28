@@ -553,16 +553,16 @@
                     <li><a href="{{ route('showRegisterForm') }}">Become a Restaurant</a></li>
                     <li><a href="{{ route('showRegisterForm') }}">Delivery Partner</a></li>
                     <li><a href="{{ route('showRegisterForm') }}">Partner Portal</a></li>
-                    <li><a href="#">Supplier Login</a></li>
+                    <li><a href="{{ route('showLoginForm') }}">Supplier Login</a></li>
                 </ul>
             </div>
 
             {{-- Contact --}}
             <div class="col-lg-2 col-6 col-md-3">
                 <div class="footer-col-title">Contact</div>
-                <div class="footer-contact-item"><div class="footer-c-icon"><i class="bi bi-telephone"></i></div>+255 700 000 000</div>
-                <div class="footer-contact-item"><div class="footer-c-icon"><i class="bi bi-envelope"></i></div>hello@tapeats.co.tz</div>
-                <div class="footer-contact-item"><div class="footer-c-icon"><i class="bi bi-geo-alt"></i></div>Dar es Salaam, TZ</div>
+                <div class="footer-contact-item"><div class="footer-c-icon"><i class="bi bi-telephone"></i></div>+255 628 052 602</div>
+                <div class="footer-contact-item"><div class="footer-c-icon"><i class="bi bi-envelope"></i></div>ejossolution@ejossolution.co.tz</div>
+                <div class="footer-contact-item"><div class="footer-c-icon"><i class="bi bi-geo-alt"></i></div>Tanzania, Africa</div>
                 <div style="margin-top:0.7rem;">
                     <a href="{{ route('customersupport') }}" style="color:var(--brand);font-size:0.8rem;font-weight:600;text-decoration:none;">
                         <i class="bi bi-headset me-1"></i> Help Center →

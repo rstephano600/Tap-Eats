@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\MenuItem;
 use App\Models\Supplier;
+use App\Models\SupplierUser;
 use App\Models\ServiceType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

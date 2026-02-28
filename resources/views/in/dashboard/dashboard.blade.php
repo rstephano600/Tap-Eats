@@ -30,7 +30,20 @@
         </a>
     </div>
 </div>
+{{-- BEFORE --}}
+@if(auth()->user()->hasRole('super_admin'))
 
+{{-- AFTER — use the passed variable --}}
+@if($isSuperAdmin)
+
+{{-- Show a message for users with no supplier --}}
+@if($hasNoSupplier)
+<div class="alert alert-warning rounded-3 border-0 shadow-sm">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    Your account is not linked to any supplier yet.
+    Please contact administration for access.
+</div>
+@endif
 {{-- =====================
      STAT CARDS
 ===================== --}}
